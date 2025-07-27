@@ -2,7 +2,7 @@
     "name": "Toko Super Games",
     "short_name": "Toko Super Games",
     "description": "Aplikasi resmi Toko Super Games.",
-    "start_url": "https://supergames19.github.io/Super-Games/index.html",
+    "start_url": "/index.html",
     "display": "standalone",
     "background_color": "#ffffff",
     "theme_color": "#28a745",
