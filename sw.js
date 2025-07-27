@@ -6,47 +6,54 @@ const urlsToCache = [
     './',
     './index.html',
     './manifest.json',
+    './maintens.html',
     './android-chrome-512x512.png'
     // Jika punya file CSS atau JS terpisah, tambahkan di sini
     // '/style.css',
     // '/app.js'
 ];
 
-// Event 'install': Menyimpan file baru ke cache baru
+// 1. Event 'install': dijalankan saat service worker baru terdeteksi
 self.addEventListener('install', event => {
+    console.log('SW Install: Meng-cache App Shell');
     event.waitUntil(
         caches.open(CACHE_NAME)
-            .then(cache => {
-                console.log('Cache baru dibuka:', CACHE_NAME);
-                return cache.addAll(urlsToCache);
-            })
+            .then(cache => cache.addAll(APP_SHELL_URLS))
+            .then(() => self.skipWaiting()) // Aktifkan SW baru segera setelah instalasi
     );
 });
 
-// Event 'activate': Membersihkan cache lama
+// 2. Event 'activate': dijalankan saat service worker baru aktif. Berguna untuk membersihkan cache lama.
 self.addEventListener('activate', event => {
+    console.log('SW Activate: Membersihkan cache lama');
     event.waitUntil(
         caches.keys().then(cacheNames => {
             return Promise.all(
-                cacheNames.map(cacheName => {
-                    // Jika nama cache tidak sama dengan nama cache yang baru, hapus.
-                    if (cacheName !== CACHE_NAME) {
-                        console.log('Menghapus cache lama:', cacheName);
-                        return caches.delete(cacheName);
-                    }
-                })
+                cacheNames
+                    .filter(name => name !== CACHE_NAME)
+                    .map(name => caches.delete(name))
             );
         })
     );
 });
 
-// Event 'fetch': Menyajikan konten dari cache
+// 3. Event 'fetch': Inti dari strategi caching. Dijalankan untuk setiap permintaan.
 self.addEventListener('fetch', event => {
+    // Gunakan strategi "Network First"
     event.respondWith(
-        caches.match(event.request)
-            .then(response => {
-                // Jika ditemukan di cache, sajikan dari cache. Jika tidak, ambil dari network.
-                return response || fetch(event.request);
+        fetch(event.request)
+            .then(networkResponse => {
+                // Jika berhasil, simpan respons ke cache dan kembalikan ke browser
+                console.log(`Fetch: Berhasil dari network untuk ${event.request.url}`);
+                return caches.open(CACHE_NAME).then(cache => {
+                    cache.put(event.request, networkResponse.clone());
+                    return networkResponse;
+                });
+            })
+            .catch(() => {
+                // Jika network gagal (offline), coba cari di cache
+                console.log(`Fetch: Gagal dari network, mencari di cache untuk ${event.request.url}`);
+                return caches.match(event.request);
             })
     );
 });
