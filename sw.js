@@ -3,10 +3,10 @@ const CACHE_NAME = 'toko-Super-Games';
 
 // Daftar file yang akan di-cache (App Shell)
 const urlsToCache = [
-    '/',
-    '/index.html',
-    '/manifest.json',
-    '/android-chrome-512x512.png'
+    './',
+    './index.html',
+    './manifest.json',
+    './android-chrome-512x512.png'
     // Jika punya file CSS atau JS terpisah, tambahkan di sini
     // '/style.css',
     // '/app.js'
