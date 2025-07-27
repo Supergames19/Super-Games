@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Perbaikan Sistem</title>
+    
+    <!-- Impor Font dari Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;500;700&display=swap" rel="stylesheet">
+    
+    <style>
+        /* Pengaturan Dasar dan Background Animasi */
+        body, html {
+            height: 100%;
+            margin: 0;
+            font-family: 'Poppins', sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden; /* Mencegah scrollbar muncul karena animasi */
+            background: linear-gradient(-45deg, #ee7752, #e73c7e, #23a6d5, #23d5ab);
+            background-size: 400% 400%;
+            animation: backgroundAnimation 15s ease infinite;
+        }
+
+        /* Keyframes untuk animasi background */
+        @keyframes backgroundAnimation {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        /* Kotak Konten Utama dengan Efek Kaca */
+        .maintenance-box {
+            text-align: center;
+            padding: 40px 50px;
+            background: rgba(255, 255, 255, 0.1); /* Latar belakang semi-transparan */
+            border-radius: 20px;
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.3);
+            backdrop-filter: blur(12px); /* Efek blur pada background di belakang elemen ini */
+            -webkit-backdrop-filter: blur(12px); /* Untuk kompatibilitas Safari */
+            border: 1px solid rgba(255, 255, 255, 0.18);
+            color: white;
+            max-width: 90%;
+            width: 500px;
+            
+            /* Menerapkan animasi mengambang */
+            animation: floatingAnimation 4s ease-in-out infinite;
+        }
+
+        /* Keyframes untuk animasi mengambang */
+        @keyframes floatingAnimation {
+            0% { transform: translateY(0px); }
+            50% { transform: translateY(-20px); }
+            100% { transform: translateY(0px); }
+        }
+        
+        /* Styling untuk Ikon (SVG) */
+        .maintenance-icon svg {
+            width: 80px;
+            height: 80px;
+            margin-bottom: 20px;
+            filter: drop-shadow(0 4px 8px rgba(0,0,0,0.4));
+        }
+
+        /* Styling untuk Judul */
+        h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+            font-weight: 700;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+        }
+
+        /* Styling untuk Paragraf */
+        p {
+            font-size: 1.1em;
+            font-weight: 300;
+            line-height: 1.6;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.5);
+        }
+
+        /* Media Query untuk layar kecil (Mobile) */
+        @media (max-width: 600px) {
+            .maintenance-box {
+                padding: 30px 25px;
+                animation: none; /* Matikan animasi mengambang di mobile agar tidak mengganggu */
+            }
+            h1 {
+                font-size: 2em;
+            }
+            p {
+                font-size: 1em;
+            }
+            .maintenance-icon svg {
+                width: 60px;
+                height: 60px;
+            }
+        }
+
+    </style>
+</head>
+<body>
+
+    <div class="maintenance-box">
+        <div class="maintenance-icon">
+            <!-- Ikon Roda Gigi (SVG) -->
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="white">
+                <path d="M19.82,12.32a1,1,0,0,0-.7-.61l-2.32-.84a1,1,0,0,0-1.16.51l-.73,1.6a.5.5,0,0,1-.62.2l-2-1.15a.5.5,0,0,1-.2-.62l.73-1.6a1,1,0,0,0-.51-1.16l-2.32-.84a1,1,0,0,0-1,.15,1,1,0,0,0-.45.86l-.28,2.44a.5.5,0,0,1-.49.43H5.68a.5.5,0,0,1-.49-.43L4.91,8.34a1,1,0,0,0-1.45-1l-1.6,1.6A1,1,0,0,0,1.7,10.1l.84,2.32a1,1,0,0,0,1.16.51l1.6-.73a.5.5,0,0,1,.62.2l1.15,2a.5.5,0,0,1-.2.62l-1.6.73a1,1,0,0,0-.51,1.16l.84,2.32a1,1,0,0,0,1.13.7,1,1,0,0,0,.61-.7l.84-2.32a1,1,0,0,0-.51-1.16l-.73-1.6a.5.5,0,0,1,.2-.62l2-1.15a.5.5,0,0,1,.62.2l.73,1.6a1,1,0,0,0,1.16.51l2.32.84a1,1,0,0,0,1-.15,1,1,0,0,0,.45-.86l.28-2.44a.5.5,0,0,1,.49-.43h1.84a.5.5,0,0,1,.49.43l.28,2.44a1,1,0,0,0,1.45,1l1.6-1.6a1,1,0,0,0,.16-1.41Zm-7.82,1.68a4,4,0,1,0-4-4,4,4,0,0,0,4,4Z"/>
+            </svg>
+        </div>
+        <h1>Perbaikan Sistem</h1>
+        <p>
+            Kami sedang melakukan beberapa pembaruan untuk meningkatkan layanan kami.
+            Mohon maaf atas ketidaknyamanannya, kami akan segera kembali online!
+        </p>
+    </div>
+
+</body>
+</html>
