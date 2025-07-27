@@ -25,6 +25,35 @@
         .tombol-masuk:hover { background-color: #218838; transform: scale(1.05); }
         .tombol-masuk.disabled { background-color: #cccccc; color: #666666; cursor: not-allowed; pointer-events: none; transform: none; }
         @media (max-width: 480px) { .container { padding: 20px; } h1 { font-size: 1.5em; } p, label { font-size: 0.9em; } }
+        /* Tambahkan di akhir CSS Anda */
+.update-notification {
+    position: fixed;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    background-color: #333;
+    color: white;
+    padding: 15px 25px;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+    z-index: 1000;
+    display: none; /* Sembunyi secara default */
+    align-items: center;
+}
+.update-notification p {
+    margin: 0;
+    padding-right: 20px;
+    color: white;
+}
+.update-notification button {
+    background-color: #28a745;
+    color: white;
+    border: none;
+    padding: 8px 15px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-weight: bold;
+}
     </style>
 </head>
 <body>
@@ -103,60 +132,82 @@
             Masuk
         </a>
     </div>
+    <!-- Taruh ini sebelum </body> -->
+     <div id="updateNotification" class="update-notification">
+        <p>Versi baru tersedia!</p>
+     <button id="reloadButton">Muat Ulang</button>
+</div>
 
-   <script>
-        // --- Bagian 1: Mengecek status persetujuan saat halaman dimuat ---
-        (function() {
-            // Cek apakah 'persetujuanDiberikan' ada di localStorage dan nilainya 'true'
-            if (localStorage.getItem('persetujuanDiberikan') === 'true') {
-                // Jika ya, jangan tampilkan halaman ini. Langsung redirect ke halaman utama.
-                console.log('Persetujuan sudah diberikan sebelumnya. Mengarahkan ke halaman utama...');
-                window.location.href = 'http://localhost/'; // Ganti dengan halaman tujuan Anda
-            }
-        })();
+<script>
+    // --- Definisikan halaman tujuan di satu tempat ---
+    const halamanTujuan = './maintense.html';
 
-
-        // --- Bagian 2: Logika untuk checkbox dan tombol ---
-        const checkboxSetuju = document.getElementById('setuju');
-        const tombolMasuk = document.getElementById('tombolMasuk');
-
-        // Fungsi untuk mengaktifkan/menonaktifkan tombol
-        checkboxSetuju.addEventListener('change', function() {
-            if (this.checked) {
-                tombolMasuk.classList.remove('disabled');
-            } else {
-                tombolMasuk.classList.add('disabled');
-            }
-        });
-        
-        // Fungsi saat tombol "Masuk" diklik
-        tombolMasuk.addEventListener('click', function(event) {
-            // Cek apakah checkbox sudah dicentang (sebagai pengaman tambahan)
-            if (checkboxSetuju.checked) {
-                // Jika ya, simpan status persetujuan ke localStorage
-                console.log('Persetujuan diberikan. Menyimpan status ke localStorage.');
-                localStorage.setItem('persetujuanDiberikan', 'true');
-                // Biarkan link berjalan normal (mengarahkan ke href)
-            } else {
-                // Jika tombol entah bagaimana bisa diklik tanpa checkbox, cegah navigasi.
-                event.preventDefault();
-                alert('Anda harus menyetujui peraturan terlebih dahulu.');
-            }
-        });
-
-
-        // --- Bagian 3: Skrip untuk mendaftarkan Service Worker (PWA) ---
-        if ('serviceWorker' in navigator) {
-            window.addEventListener('load', () => {
-                navigator.serviceWorker.register('./sw.js')
-                    .then(registration => {
-                        console.log('Service Worker berhasil didaftarkan:', registration);
-                    })
-                    .catch(error => {
-                        console.log('Pendaftaran Service Worker gagal:', error);
-                    });
-            });
+    (function() {
+        if (localStorage.getItem('persetujuanDiberikan') === 'true') {
+            window.location.href = halamanTujuan;
         }
+    })();
+
+    // ... (Kode untuk checkbox dan tombol 'Masuk' tetap sama) ...
+    const checkboxSetuju = document.getElementById('setuju');
+    const tombolMasuk = document.getElementById('tombolMasuk');
+    tombolMasuk.href = halamanTujuan;
+    checkboxSetuju.addEventListener('change', function() {
+        tombolMasuk.classList.toggle('disabled', !this.checked);
+    });
+    tombolMasuk.addEventListener('click', function(event) {
+        if (checkboxSetuju.checked) {
+            localStorage.setItem('persetujuanDiberikan', 'true');
+        } else {
+            event.preventDefault();
+        }
+    });
+
+    // --- Bagian PENTING: Logika PWA dan Deteksi Update ---
+    let newWorker; // Variabel untuk menyimpan service worker baru
+
+    function showUpdateNotification() {
+        const notification = document.getElementById('updateNotification');
+        const reloadButton = document.getElementById('reloadButton');
+        notification.style.display = 'flex'; // Tampilkan notifikasi
+        
+        reloadButton.addEventListener('click', () => {
+            // Kirim pesan ke service worker untuk segera aktif
+            newWorker.postMessage({ action: 'skipWaiting' });
+        });
+    }
+    
+    if ('serviceWorker' in navigator) {
+        navigator.serviceWorker.register('./sw.js').then(reg => {
+            // Cek jika ada worker yang sedang menunggu untuk aktif
+            if (reg.waiting) {
+                newWorker = reg.waiting;
+                showUpdateNotification();
+                return;
+            }
+            
+            // Cek jika ada worker baru yang ditemukan saat runtime
+            reg.addEventListener('updatefound', () => {
+                newWorker = reg.installing;
+                newWorker.addEventListener('statechange', () => {
+                    // Jika worker baru sudah selesai install dan sedang menunggu
+                    if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
+                        showUpdateNotification();
+                    }
+                });
+            });
+        }).catch(error => {
+            console.log('Registrasi Service Worker gagal:', error);
+        });
+
+        // Reload halaman setelah worker baru mengambil alih
+        let refreshing;
+        navigator.serviceWorker.addEventListener('controllerchange', () => {
+            if (refreshing) return;
+            window.location.reload();
+            refreshing = true;
+        });
+    }
     </script>
 </body>
 </html>
