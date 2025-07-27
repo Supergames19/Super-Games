@@ -104,11 +104,23 @@
         </a>
     </div>
 
-    <script>
-        // --- Skrip untuk mengaktifkan tombol ---
+   <script>
+        // --- Bagian 1: Mengecek status persetujuan saat halaman dimuat ---
+        (function() {
+            // Cek apakah 'persetujuanDiberikan' ada di localStorage dan nilainya 'true'
+            if (localStorage.getItem('persetujuanDiberikan') === 'true') {
+                // Jika ya, jangan tampilkan halaman ini. Langsung redirect ke halaman utama.
+                console.log('Persetujuan sudah diberikan sebelumnya. Mengarahkan ke halaman utama...');
+                window.location.href = './maintenance.html'; // Ganti dengan halaman tujuan Anda
+            }
+        })();
+
+
+        // --- Bagian 2: Logika untuk checkbox dan tombol ---
         const checkboxSetuju = document.getElementById('setuju');
         const tombolMasuk = document.getElementById('tombolMasuk');
 
+        // Fungsi untuk mengaktifkan/menonaktifkan tombol
         checkboxSetuju.addEventListener('change', function() {
             if (this.checked) {
                 tombolMasuk.classList.remove('disabled');
@@ -116,8 +128,24 @@
                 tombolMasuk.classList.add('disabled');
             }
         });
+        
+        // Fungsi saat tombol "Masuk" diklik
+        tombolMasuk.addEventListener('click', function(event) {
+            // Cek apakah checkbox sudah dicentang (sebagai pengaman tambahan)
+            if (checkboxSetuju.checked) {
+                // Jika ya, simpan status persetujuan ke localStorage
+                console.log('Persetujuan diberikan. Menyimpan status ke localStorage.');
+                localStorage.setItem('persetujuanDiberikan', 'true');
+                // Biarkan link berjalan normal (mengarahkan ke href)
+            } else {
+                // Jika tombol entah bagaimana bisa diklik tanpa checkbox, cegah navigasi.
+                event.preventDefault();
+                alert('Anda harus menyetujui peraturan terlebih dahulu.');
+            }
+        });
 
-        // --- Skrip untuk mendaftarkan Service Worker (PWA) ---
+
+        // --- Bagian 3: Skrip untuk mendaftarkan Service Worker (PWA) ---
         if ('serviceWorker' in navigator) {
             window.addEventListener('load', () => {
                 navigator.serviceWorker.register('./sw.js')
@@ -130,6 +158,5 @@
             });
         }
     </script>
-
 </body>
 </html>
