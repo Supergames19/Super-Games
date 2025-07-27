@@ -12,28 +12,41 @@ const urlsToCache = [
     // '/app.js'
 ];
 
-// Event 'install': dijalankan saat service worker pertama kali di-install
+// Event 'install': Menyimpan file baru ke cache baru
 self.addEventListener('install', event => {
     event.waitUntil(
         caches.open(CACHE_NAME)
             .then(cache => {
-                console.log('Cache dibuka');
+                console.log('Cache baru dibuka:', CACHE_NAME);
                 return cache.addAll(urlsToCache);
             })
     );
 });
 
-// Event 'fetch': dijalankan setiap kali ada permintaan resource (misal gambar, halaman)
+// Event 'activate': Membersihkan cache lama
+self.addEventListener('activate', event => {
+    event.waitUntil(
+        caches.keys().then(cacheNames => {
+            return Promise.all(
+                cacheNames.map(cacheName => {
+                    // Jika nama cache tidak sama dengan nama cache yang baru, hapus.
+                    if (cacheName !== CACHE_NAME) {
+                        console.log('Menghapus cache lama:', cacheName);
+                        return caches.delete(cacheName);
+                    }
+                })
+            );
+        })
+    );
+});
+
+// Event 'fetch': Menyajikan konten dari cache
 self.addEventListener('fetch', event => {
     event.respondWith(
         caches.match(event.request)
             .then(response => {
-                // Jika resource ditemukan di cache, langsung kembalikan dari cache
-                if (response) {
-                    return response;
-                }
-                // Jika tidak, ambil dari network
-                return fetch(event.request);
+                // Jika ditemukan di cache, sajikan dari cache. Jika tidak, ambil dari network.
+                return response || fetch(event.request);
             })
     );
 });
