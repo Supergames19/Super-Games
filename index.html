@@ -1,67 +1,157 @@
 <!DOCTYPE html>
 <html lang="id">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    
+
     <!-- Link ke Manifest -->
     <link rel="manifest" href="./manifest.json">
-    
+
     <!-- Warna Tema untuk Browser di Mobile -->
-    <meta name="theme-color" content="#28a745"/>
+    <meta name="theme-color" content="#28a745" />
 
     <title>Peraturan & Ketentuan Toko</title>
     <style>
         /* [ ... KODE CSS ANDA YANG SEBELUMNYA TETAP DI SINI ... ] */
         /* Pastikan kode CSS Anda dari jawaban sebelumnya ada di sini */
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; display: flex; justify-content: center; align-items: center; min-height: 100vh; background-color: #f4f4f4; padding: 15px; }
-        .container { background-color: white; padding: 30px; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.1); text-align: center; width: 90%; max-width: 500px; }
-        h1 { color: #1a1919; font-size: 1.8em; margin-bottom: 15px; }
-        p { color: #1f1e1e; line-height: 1.6; font-size: 1em; }
-        .persetujuan { margin-top: 25px; text-align: left; display: flex; align-items: center; }
-        .persetujuan input[type="checkbox"] { margin-right: 10px; width: 18px; height: 18px; }
-        .tombol-masuk { display: inline-block; background-color: #28a745; color: white; padding: 12px 25px; border: none; border-radius: 5px; font-size: 16px; font-weight: bold; text-decoration: none; cursor: pointer; margin-top: 25px; transition: background-color 0.3s, transform 0.2s; width: 100%; max-width: 250px; }
-        .tombol-masuk:hover { background-color: #218838; transform: scale(1.05); }
-        .tombol-masuk.disabled { background-color: #cccccc; color: #666666; cursor: not-allowed; pointer-events: none; transform: none; }
-        @media (max-width: 480px) { .container { padding: 20px; } h1 { font-size: 1.5em; } p, label { font-size: 0.9em; } }
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            background-color: #f4f4f4;
+            padding: 15px;
+        }
+
+        .container {
+            background-color: white;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            text-align: center;
+            width: 90%;
+            max-width: 500px;
+        }
+
+        h1 {
+            color: #1a1919;
+            font-size: 1.8em;
+            margin-bottom: 15px;
+        }
+
+        p {
+            color: #1f1e1e;
+            line-height: 1.6;
+            font-size: 1em;
+        }
+
+        .persetujuan {
+            margin-top: 25px;
+            text-align: left;
+            display: flex;
+            align-items: center;
+        }
+
+        .persetujuan input[type="checkbox"] {
+            margin-right: 10px;
+            width: 18px;
+            height: 18px;
+        }
+
+        .tombol-masuk {
+            display: inline-block;
+            background-color: #28a745;
+            color: white;
+            padding: 12px 25px;
+            border: none;
+            border-radius: 5px;
+            font-size: 16px;
+            font-weight: bold;
+            text-decoration: none;
+            cursor: pointer;
+            margin-top: 25px;
+            transition: background-color 0.3s, transform 0.2s;
+            width: 100%;
+            max-width: 250px;
+        }
+
+        .tombol-masuk:hover {
+            background-color: #218838;
+            transform: scale(1.05);
+        }
+
+        .tombol-masuk.disabled {
+            background-color: #cccccc;
+            color: #666666;
+            cursor: not-allowed;
+            pointer-events: none;
+            transform: none;
+        }
+
+        @media (max-width: 480px) {
+            .container {
+                padding: 20px;
+            }
+
+            h1 {
+                font-size: 1.5em;
+            }
+
+            p,
+            label {
+                font-size: 0.9em;
+            }
+        }
+
         /* Tambahkan di akhir CSS Anda */
-.update-notification {
-    position: fixed;
-    bottom: 20px;
-    left: 50%;
-    transform: translateX(-50%);
-    background-color: #333;
-    color: white;
-    padding: 15px 25px;
-    border-radius: 8px;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.3);
-    z-index: 1000;
-    display: none; /* Sembunyi secara default */
-    align-items: center;
-}
-.update-notification p {
-    margin: 0;
-    padding-right: 20px;
-    color: white;
-}
-.update-notification button {
-    background-color: #28a745;
-    color: white;
-    border: none;
-    padding: 8px 15px;
-    border-radius: 5px;
-    cursor: pointer;
-    font-weight: bold;
-}
+        .update-notification {
+            position: fixed;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background-color: #333;
+            color: white;
+            padding: 15px 25px;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+            z-index: 1000;
+            display: none;
+            /* Sembunyi secara default */
+            align-items: center;
+        }
+
+        .update-notification p {
+            margin: 0;
+            padding-right: 20px;
+            color: white;
+        }
+
+        .update-notification button {
+            background-color: #28a745;
+            color: white;
+            border: none;
+            padding: 8px 15px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: bold;
+        }
     </style>
 </head>
+
 <body>
 
     <div class="container">
         <h1>SELAMAT DATANG</h1>
         <h2>Peraturan & Ketentuan Toko</h2>
-    </br>
+        </br>
         <p>
             Untuk kenyamanan bersama, mohon luangkan waktu sejenak untuk membaca peraturan toko kami sebelum Anda
             melanjutkan.
@@ -108,12 +198,15 @@
             <h3 style="margin-bottom: 10px; text-align: center;">Hai Kak, Yuk Simak Dulu!</h3>
             <ul style="padding-left: 20px; color: #3a3a3a;; list-style-type: '✅ '; /* Emoji sebagai bullet */">
                 <li style="margin-bottom: 8px;">
-                    <strong>Cek Pesananmu:</strong> Sebelum checkout, pastikan detail pesanannya <strong>Cocok</strong> dan
+                    <strong>Cek Pesananmu:</strong> Sebelum checkout, pastikan detail pesanannya <strong>Cocok</strong>
+                    dan
                     alamat kamu sudah 100% benar ya, agar paket cepat sampai tujuan!
                 </li>
                 <li style="margin-bottom: 8px;">
-                    <strong>Proses Kilat:</strong> Tim kami akan langsung memproses pesanan kamu setelah pembayaran. Mohon
-                    bersabar menunggu resi yang akan kami Kirimkan Berbentuk JPG sesuai dengan Jasa Pengiriman Yang Kita pakai, ke aplikasih Ini diBagian Pesanan.
+                    <strong>Proses Kilat:</strong> Tim kami akan langsung memproses pesanan kamu setelah pembayaran.
+                    Mohon
+                    bersabar menunggu resi yang akan kami Kirimkan Berbentuk JPG sesuai dengan Jasa Pengiriman Yang Kita
+                    pakai, ke aplikasih Ini diBagian Pesanan.
                 </li>
                 <li style="margin-bottom: 8px;">
                     <strong>Jika Ada Kendala:</strong> Jangan khawatir! Cukup rekam video unboxing paket kamu (dari awal
@@ -128,86 +221,87 @@
         </div>
 
         <!-- GANTI 'halaman-utama.html' dengan link tujuan Anda (maintens.html)-->
-        <a href="http://localhost/" id="tombolMasuk" class="tombol-masuk disabled">
+        <a href=" https://3934f8512eb8.ngrok-free.app" id="tombolMasuk" class="tombol-masuk disabled">
             Masuk
         </a>
     </div>
     <!-- Taruh ini sebelum </body> -->
-     <div id="updateNotification" class="update-notification">
+    <div id="updateNotification" class="update-notification">
         <p>Versi baru tersedia!</p>
-     <button id="reloadButton">Muat Ulang</button>
-</div>
+        <button id="reloadButton">Muat Ulang</button>
+    </div>
 
-<script>
-    // --- Definisikan halaman tujuan di satu tempat ---
-    const halamanTujuan = './maintense.html';
+    <script>
+        // --- Definisikan halaman tujuan di satu tempat ---
+        const halamanTujuan = './maintens.html';
 
-    (function() {
-        if (localStorage.getItem('persetujuanDiberikan') === 'true') {
-            window.location.href = halamanTujuan;
-        }
-    })();
-
-    // ... (Kode untuk checkbox dan tombol 'Masuk' tetap sama) ...
-    const checkboxSetuju = document.getElementById('setuju');
-    const tombolMasuk = document.getElementById('tombolMasuk');
-    tombolMasuk.href = halamanTujuan;
-    checkboxSetuju.addEventListener('change', function() {
-        tombolMasuk.classList.toggle('disabled', !this.checked);
-    });
-    tombolMasuk.addEventListener('click', function(event) {
-        if (checkboxSetuju.checked) {
-            localStorage.setItem('persetujuanDiberikan', 'true');
-        } else {
-            event.preventDefault();
-        }
-    });
-
-    // --- Bagian PENTING: Logika PWA dan Deteksi Update ---
-    let newWorker; // Variabel untuk menyimpan service worker baru
-
-    function showUpdateNotification() {
-        const notification = document.getElementById('updateNotification');
-        const reloadButton = document.getElementById('reloadButton');
-        notification.style.display = 'flex'; // Tampilkan notifikasi
-        
-        reloadButton.addEventListener('click', () => {
-            // Kirim pesan ke service worker untuk segera aktif
-            newWorker.postMessage({ action: 'skipWaiting' });
-        });
-    }
-    
-    if ('serviceWorker' in navigator) {
-        navigator.serviceWorker.register('./sw.js').then(reg => {
-            // Cek jika ada worker yang sedang menunggu untuk aktif
-            if (reg.waiting) {
-                newWorker = reg.waiting;
-                showUpdateNotification();
-                return;
+        (function () {
+            if (localStorage.getItem('persetujuanDiberikan') === 'true') {
+                window.location.href = halamanTujuan;
             }
-            
-            // Cek jika ada worker baru yang ditemukan saat runtime
-            reg.addEventListener('updatefound', () => {
-                newWorker = reg.installing;
-                newWorker.addEventListener('statechange', () => {
-                    // Jika worker baru sudah selesai install dan sedang menunggu
-                    if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
-                        showUpdateNotification();
-                    }
-                });
-            });
-        }).catch(error => {
-            console.log('Registrasi Service Worker gagal:', error);
+        })();
+
+        // ... (Kode untuk checkbox dan tombol 'Masuk' tetap sama) ...
+        const checkboxSetuju = document.getElementById('setuju');
+        const tombolMasuk = document.getElementById('tombolMasuk');
+        tombolMasuk.href = halamanTujuan;
+        checkboxSetuju.addEventListener('change', function () {
+            tombolMasuk.classList.toggle('disabled', !this.checked);
+        });
+        tombolMasuk.addEventListener('click', function (event) {
+            if (checkboxSetuju.checked) {
+                localStorage.setItem('persetujuanDiberikan', 'true');
+            } else {
+                event.preventDefault();
+            }
         });
 
-        // Reload halaman setelah worker baru mengambil alih
-        let refreshing;
-        navigator.serviceWorker.addEventListener('controllerchange', () => {
-            if (refreshing) return;
-            window.location.reload();
-            refreshing = true;
-        });
-    }
+        // --- Bagian PENTING: Logika PWA dan Deteksi Update ---
+        let newWorker; // Variabel untuk menyimpan service worker baru
+
+        function showUpdateNotification() {
+            const notification = document.getElementById('updateNotification');
+            const reloadButton = document.getElementById('reloadButton');
+            notification.style.display = 'flex'; // Tampilkan notifikasi
+
+            reloadButton.addEventListener('click', () => {
+                // Kirim pesan ke service worker untuk segera aktif
+                newWorker.postMessage({ action: 'skipWaiting' });
+            });
+        }
+
+        if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.register('./sw.js').then(reg => {
+                // Cek jika ada worker yang sedang menunggu untuk aktif
+                if (reg.waiting) {
+                    newWorker = reg.waiting;
+                    showUpdateNotification();
+                    return;
+                }
+
+                // Cek jika ada worker baru yang ditemukan saat runtime
+                reg.addEventListener('updatefound', () => {
+                    newWorker = reg.installing;
+                    newWorker.addEventListener('statechange', () => {
+                        // Jika worker baru sudah selesai install dan sedang menunggu
+                        if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
+                            showUpdateNotification();
+                        }
+                    });
+                });
+            }).catch(error => {
+                console.log('Registrasi Service Worker gagal:', error);
+            });
+
+            // Reload halaman setelah worker baru mengambil alih
+            let refreshing;
+            navigator.serviceWorker.addEventListener('controllerchange', () => {
+                if (refreshing) return;
+                window.location.reload();
+                refreshing = true;
+            });
+        }
     </script>
 </body>
+
 </html>
