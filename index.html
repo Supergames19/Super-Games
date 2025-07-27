@@ -99,7 +99,7 @@
         </div>
 
         <!-- GANTI 'halaman-utama.html' dengan link tujuan Anda (maintens.html)-->
-        <a href=" https://abb23f158ea5.ngrok-free.app" id="tombolMasuk" class="tombol-masuk disabled">
+        <a href="http://localhost/" id="tombolMasuk" class="tombol-masuk disabled">
             Masuk
         </a>
     </div>
@@ -111,7 +111,7 @@
             if (localStorage.getItem('persetujuanDiberikan') === 'true') {
                 // Jika ya, jangan tampilkan halaman ini. Langsung redirect ke halaman utama.
                 console.log('Persetujuan sudah diberikan sebelumnya. Mengarahkan ke halaman utama...');
-                window.location.href = ' https://abb23f158ea5.ngrok-free.app'; // Ganti dengan halaman tujuan Anda
+                window.location.href = 'http://localhost/'; // Ganti dengan halaman tujuan Anda
             }
         })();
 
