@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <!-- Link ke Manifest -->
+    <link rel="manifest" href="manifest.json">
+    
+    <!-- Warna Tema untuk Browser di Mobile -->
+    <meta name="theme-color" content="#28a745"/>
+
+    <title>Peraturan & Ketentuan Toko</title>
+    <style>
+        /* [ ... KODE CSS ANDA YANG SEBELUMNYA TETAP DI SINI ... ] */
+        /* Pastikan kode CSS Anda dari jawaban sebelumnya ada di sini */
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; display: flex; justify-content: center; align-items: center; min-height: 100vh; background-color: #f4f4f4; padding: 15px; }
+        .container { background-color: white; padding: 30px; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.1); text-align: center; width: 90%; max-width: 500px; }
+        h1 { color: #1a1919; font-size: 1.8em; margin-bottom: 15px; }
+        p { color: #1f1e1e; line-height: 1.6; font-size: 1em; }
+        .persetujuan { margin-top: 25px; text-align: left; display: flex; align-items: center; }
+        .persetujuan input[type="checkbox"] { margin-right: 10px; width: 18px; height: 18px; }
+        .tombol-masuk { display: inline-block; background-color: #28a745; color: white; padding: 12px 25px; border: none; border-radius: 5px; font-size: 16px; font-weight: bold; text-decoration: none; cursor: pointer; margin-top: 25px; transition: background-color 0.3s, transform 0.2s; width: 100%; max-width: 250px; }
+        .tombol-masuk:hover { background-color: #218838; transform: scale(1.05); }
+        .tombol-masuk.disabled { background-color: #cccccc; color: #666666; cursor: not-allowed; pointer-events: none; transform: none; }
+        @media (max-width: 480px) { .container { padding: 20px; } h1 { font-size: 1.5em; } p, label { font-size: 0.9em; } }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h1>SELAMAT DATANG</h1>
+        <h2>Peraturan & Ketentuan Toko</h2>
+    </br>
+        <p>
+            Untuk kenyamanan bersama, mohon luangkan waktu sejenak untuk membaca peraturan toko kami sebelum Anda
+            melanjutkan.
+        </p>
+        <div style="text-align: left; border-top: 1px solid #000000; padding-top: 15px; margin-top: 15px; ">
+            <h3 style="margin-bottom: 10px; text-align: center;">Poin Penting Sebelum Belanja</h3>
+            <ul style="padding-left: 20px; color: #3a3a3a;">
+                <li style="margin-bottom: 8px;">
+                    <strong>Pemesanan:</strong> Pastikan alamat dan detail pesanan sudah benar sebelum membayar.
+                    Kesalahan di luar tanggung jawab kami.
+                </li>
+                <li style="margin-bottom: 8px;">
+                    <strong>Pengiriman:</strong> Pesanan akan kami proses dalam 1-2 hari kerja setelah pembayaran
+                    dikonfirmasi.
+                </li>
+                <li style="margin-bottom: 8px;">
+                    <strong>Komplain & Retur:</strong> Wajib menyertakan bukti <strong>video unboxing</strong> tanpa
+                    jeda dari awal paket masih tersegel. Tanpa video, komplain tidak dapat kami proses.
+                    <strong>Lalu Kirim ke Whatsapp Kami 0823 6713 6420</strong>
+                </li>
+            </ul>
+        </div>
+        <div style="text-align: left; border-top: 1px solid #eee; padding-top: 15px; margin-top: 15px;">
+            <h3 style="margin-bottom: 10px; text-align: center;">Peraturan Belanja</h3>
+            <ol style="padding-left: 20px; color: #3a3a3a; line-height: 1.6;">
+                <li style="margin-bottom: 10px;">
+                    <strong>Jam Operasional:</strong> Senin - Sabtu, 08.30 - 17:00 WIB. Pesanan di luar jam tersebut
+                    akan diproses pada hari kerja berikutnya.
+                </li>
+                <li style="margin-bottom: 10px;">
+                    <strong>Proses Pembayaran & Pengiriman:</strong> Pembayaran yang terverifikasi sebelum pukul 15:00
+                    akan diusahakan dikirim di hari yang sama. Kami tidak bertanggung jawab atas keterlambatan yang
+                    disebabkan oleh pihak kurir.
+                </li>
+                <li style="margin-bottom: 10px;">
+                    <strong>Ketentuan Komplain:</strong> Segala bentuk komplain mengenai kekurangan atau kerusakan
+                    produk wajib disertai bukti video unboxing dari awal paket masih tersegel hingga selesai diperiksa,
+                    tanpa terpotong. Batas komplain adalah 1x24 jam setelah barang diterima.
+                </li>
+            </ol>
+        </div>
+
+        <div style="text-align: left; border-top: 1px solid #eee; padding-top: 15px; margin-top: 15px;">
+            <h3 style="margin-bottom: 10px; text-align: center;">Hai Kak, Yuk Simak Dulu!</h3>
+            <ul style="padding-left: 20px; color: #3a3a3a;; list-style-type: '✅ '; /* Emoji sebagai bullet */">
+                <li style="margin-bottom: 8px;">
+                    <strong>Cek Pesananmu:</strong> Sebelum checkout, pastikan detail pesanannya <strong>Cocok</strong> dan
+                    alamat kamu sudah 100% benar ya, agar paket cepat sampai tujuan!
+                </li>
+                <li style="margin-bottom: 8px;">
+                    <strong>Proses Kilat:</strong> Tim kami akan langsung memproses pesanan kamu setelah pembayaran. Mohon
+                    bersabar menunggu resi yang akan kami Kirimkan Berbentuk JPG sesuai dengan Jasa Pengiriman Yang Kita pakai, ke aplikasih Ini diBagian Pesanan.
+                </li>
+                <li style="margin-bottom: 8px;">
+                    <strong>Jika Ada Kendala:</strong> Jangan khawatir! Cukup rekam video unboxing paket kamu (dari awal
+                    sampai akhir, tanpa jeda) dan kirimkan ke kami. Tim kami siap membantu!
+                </li>
+            </ul>
+        </div>
+
+        <div class="persetujuan">
+            <input type="checkbox" id="setuju" name="setuju">
+            <label for="setuju">Saya telah membaca dan setuju dengan peraturan yang berlaku.</label>
+        </div>
+
+        <!-- GANTI 'halaman-utama.html' dengan link tujuan Anda -->
+        <a href="http://localhost/" id="tombolMasuk" class="tombol-masuk disabled">
+            Masuk
+        </a>
+    </div>
+
+    <script>
+        // --- Skrip untuk mengaktifkan tombol ---
+        const checkboxSetuju = document.getElementById('setuju');
+        const tombolMasuk = document.getElementById('tombolMasuk');
+
+        checkboxSetuju.addEventListener('change', function() {
+            if (this.checked) {
+                tombolMasuk.classList.remove('disabled');
+            } else {
+                tombolMasuk.classList.add('disabled');
+            }
+        });
+
+        // --- Skrip untuk mendaftarkan Service Worker (PWA) ---
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('/sw.js')
+                    .then(registration => {
+                        console.log('Service Worker berhasil didaftarkan:', registration);
+                    })
+                    .catch(error => {
+                        console.log('Pendaftaran Service Worker gagal:', error);
+                    });
+            });
+        }
+    </script>
+
+</body>
+</html>
