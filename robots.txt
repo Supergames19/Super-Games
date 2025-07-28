@@ -1,0 +1,5 @@
+# Beritahu semua robot
+User-agent: *
+
+# Untuk tidak merayapi direktori manapun di situs ini
+Disallow: /

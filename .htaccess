@@ -1,0 +1,17 @@
+RewriteEngine On
+Options -Indexes
+
+# Mencegah akses langsung ke file-file internal
+# Tambahkan ekstensi file yang ingin diblokir di sini
+<FilesMatch "^(maintens|manifest|sw)\.(html|json|js)$">
+    Require all denied
+</FilesMatch>
+
+# Jika ingin memblokir SATU file html spesifik
+<Files "template_email.html">
+    Require all denied
+</Files>
+
+# Blokir User-Agent yang umum digunakan untuk scraping
+RewriteCond %{HTTP_USER_AGENT} ^(curl|Wget|libwww-perl|python-requests|Scrapy) [NC]
+RewriteRule .* - [F,L]
