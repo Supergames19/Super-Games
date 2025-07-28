@@ -1,0 +1,8 @@
+# Abaikan folder vendor dari Composer
+/vendor
+
+# Abaikan file konfigurasi rahasia
+config.secret.php
+
+# Abaikan file .env (jika menggunakan)
+.env
