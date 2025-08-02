@@ -144,6 +144,58 @@
             cursor: pointer;
             font-weight: bold;
         }
+
+        /* ... Kode CSS Anda yang sudah ada ... */
+
+        /* [TAMBAHKAN INI] GAYA UNTUK PROMPT INSTALASI KUSTOM */
+        .install-prompt {
+            position: fixed;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background-color: #007bff;
+            /* Warna biru yang menarik perhatian */
+            color: white;
+            padding: 15px 25px;
+            border-radius: 12px;
+            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.25);
+            z-index: 2000;
+            /* Pastikan di atas notifikasi update */
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            width: 90%;
+            max-width: 500px;
+            transition: transform 0.3s ease-in-out;
+        }
+
+        .install-prompt.hidden {
+            display: none;
+        }
+
+        .install-prompt p {
+            margin: 0;
+            padding-right: 20px;
+            color: white;
+            font-weight: 500;
+        }
+
+        .tombol-install {
+            background-color: #ffffff;
+            color: #007bff;
+            border: none;
+            padding: 10px 18px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: bold;
+            white-space: nowrap;
+            /* Mencegah teks tombol terpotong */
+            transition: background-color 0.2s;
+        }
+
+        .tombol-install:hover {
+            background-color: #f0f0f0;
+        }
     </style>
 </head>
 
@@ -151,7 +203,7 @@
     <noscript>
         <style>
             /* Sembunyikan semua konten jika JS mati */
-            body > *:not(noscript) {
+            body>*:not(noscript) {
                 display: none !important;
             }
         </style>
@@ -243,6 +295,10 @@
         <p>Versi baru tersedia!</p>
         <button id="reloadButton">Muat Ulang</button>
     </div>
+    <div id="install-container" class="install-prompt hidden">
+        <p>Install Aplikasi Toko Super Games untuk pengalaman terbaik!</p>
+        <button id="install-button" class="tombol-install">Install Sekarang</button>
+    </div>
 
     <script>
         // --- Definisikan halaman tujuan di satu tempat ---
@@ -314,13 +370,57 @@
                 refreshing = true;
             });
         }
+        <script>
+    // ... (Kode JavaScript Anda untuk checkbox dan PWA update) ...
+
+    // --- [TAMBAHKAN INI] LOGIKA UNTUK PROMPT INSTALASI KUSTOM ---
+
+    let deferredPrompt; // Variabel untuk menyimpan event 'beforeinstallprompt'
+    const installContainer = document.getElementById('install-container');
+    const installButton = document.getElementById('install-button');
+
+    // 1. Dengarkan event 'beforeinstallprompt'
+    window.addEventListener('beforeinstallprompt', (e) => {
+        // Mencegah mini-infobar default muncul di Chrome
+        e.preventDefault();
+        // Simpan event agar bisa dipicu nanti
+        deferredPrompt = e;
+        // Tampilkan UI/banner instalasi kustom kita
+        console.log('`beforeinstallprompt` event ditangkap. Tampilkan tombol install.');
+        installContainer.classList.remove('hidden');
+    });
+
+    // 2. Tambahkan event listener untuk tombol instalasi kustom
+    installButton.addEventListener('click', async () => {
+        // Sembunyikan UI instalasi kita, karena prompt hanya bisa dipanggil sekali
+        installContainer.classList.add('hidden');
+
+        if (deferredPrompt) {
+            // Tampilkan prompt instalasi browser
+            deferredPrompt.prompt();
+
+            // Tunggu respons dari pengguna
+            const { outcome } = await deferredPrompt.userChoice;
+            console.log(`Respons pengguna: ${outcome}`);
+
+            // Kita tidak bisa menggunakan event ini lagi, jadi kita bersihkan
+            deferredPrompt = null;
+        }
+    });
+
+    // 3. (Opsional tapi bagus) Dengarkan event 'appinstalled'
+    // Event ini akan terpanggil jika aplikasi berhasil di-install
+    window.addEventListener('appinstalled', () => {
+        console.log('Aplikasi berhasil di-install!');
+        // Sembunyikan UI instalasi kita secara permanen
+        installContainer.classList.add('hidden');
+        deferredPrompt = null;
+    });
+
+
     </script>
     <script src="main.js" defer></script>
-    <div id="install-container" class="install-prompt hidden">
-        <p>Install Aplikasi Toko Super Games untuk pengalaman terbaik!</p>
-        <button id="install-button" class="tombol-install">Install Sekarang</button>
-    </div>
+
 </body>
 
 </html>
-
