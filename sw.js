@@ -13,19 +13,22 @@ const urlsToCache = [
     // '/app.js'
 ];
 
-// 1. Event 'install': dijalankan saat service worker baru terdeteksi
+// 1. Event 'install': Cache the App Shell.
+// We remove skipWaiting() here to allow the update notification in index.html to work.
 self.addEventListener('install', event => {
-    console.log('SW Install: Meng-cache App Shell');
+    console.log('SW Install: Caching App Shell');
     event.waitUntil(
         caches.open(CACHE_NAME)
-            .then(cache => cache.addAll(APP_SHELL_URLS))
-            .then(() => self.skipWaiting()) // Aktifkan SW baru segera setelah instalasi
+            .then(cache => {
+                console.log('Cache opened, adding URLs');
+                return cache.addAll(urlsToCache);
+            })
     );
 });
 
-// 2. Event 'activate': dijalankan saat service worker baru aktif. Berguna untuk membersihkan cache lama.
+// 2. Event 'activate': Clean up old caches.
 self.addEventListener('activate', event => {
-    console.log('SW Activate: Membersihkan cache lama');
+    console.log('SW Activate: Cleaning up old caches');
     event.waitUntil(
         caches.keys().then(cacheNames => {
             return Promise.all(
@@ -35,25 +38,36 @@ self.addEventListener('activate', event => {
             );
         })
     );
+    // Tell the active service worker to take control of the page immediately.
+    return self.clients.claim();
 });
 
-// 3. Event 'fetch': Inti dari strategi caching. Dijalankan untuk setiap permintaan.
+// 3. Event 'fetch': Use the "Network First" strategy.
 self.addEventListener('fetch', event => {
-    // Gunakan strategi "Network First"
-    event.respondWith(
-        fetch(event.request)
-            .then(networkResponse => {
-                // Jika berhasil, simpan respons ke cache dan kembalikan ke browser
-                console.log(`Fetch: Berhasil dari network untuk ${event.request.url}`);
-                return caches.open(CACHE_NAME).then(cache => {
-                    cache.put(event.request, networkResponse.clone());
-                    return networkResponse;
-                });
-            })
-            .catch(() => {
-                // Jika network gagal (offline), coba cari di cache
-                console.log(`Fetch: Gagal dari network, mencari di cache untuk ${event.request.url}`);
-                return caches.match(event.request);
-            })
-    );
+    // We only want to apply this strategy to navigation requests (HTML pages) and our assets
+    // to avoid interfering with other requests (e.g., to third-party APIs).
+    if (event.request.mode === 'navigate' || urlsToCache.includes(new URL(event.request.url).pathname)) {
+        event.respondWith(
+            fetch(event.request)
+                .then(networkResponse => {
+                    // If fetch is successful, clone the response, cache it, and return it.
+                    return caches.open(CACHE_NAME).then(cache => {
+                        cache.put(event.request, networkResponse.clone());
+                        return networkResponse;
+                    });
+                })
+                .catch(() => {
+                    // If fetch fails (offline), try to get the response from the cache.
+                    console.log(`Fetch failed; serving from cache for: ${event.request.url}`);
+                    return caches.match(event.request);
+                })
+        );
+    }
+});
+
+// 4. Listen for the message from the client (index.html) to activate the new SW.
+self.addEventListener('message', event => {
+    if (event.data && event.data.action === 'skipWaiting') {
+        self.skipWaiting();
+    }
 });
