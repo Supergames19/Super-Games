@@ -304,16 +304,18 @@
         // --- Definisikan halaman tujuan di satu tempat ---
         const halamanTujuan = 'https://0a01158e117d.ngrok-free.app';
 
+        // --- LOGIKA REDIRECT PENGUNJUNG KEMBALI ---
         (function () {
             if (localStorage.getItem('persetujuanDiberikan') === 'true') {
+                // Saat testing, Anda bisa beri komentar pada baris di bawah ini
                 window.location.href = halamanTujuan;
             }
         })();
 
-        // ... (Kode untuk checkbox dan tombol 'Masuk' tetap sama) ...
+        // --- LOGIKA TOMBOL PERSETUJUAN ---
         const checkboxSetuju = document.getElementById('setuju');
         const tombolMasuk = document.getElementById('tombolMasuk');
-        tombolMasuk.href = halamanTujuan;
+        // tombolMasuk.href = halamanTujuan; // Baris ini tidak perlu karena href sudah ada di HTML
         checkboxSetuju.addEventListener('change', function () {
             tombolMasuk.classList.toggle('disabled', !this.checked);
         });
@@ -321,38 +323,30 @@
             if (checkboxSetuju.checked) {
                 localStorage.setItem('persetujuanDiberikan', 'true');
             } else {
-                event.preventDefault();
+                event.preventDefault(); // Mencegah pindah halaman jika checkbox tidak dicentang
             }
         });
 
-        // --- Bagian PENTING: Logika PWA dan Deteksi Update ---
-        let newWorker; // Variabel untuk menyimpan service worker baru
-
+        // --- LOGIKA PWA UPDATE NOTIFICATION ---
+        let newWorker;
         function showUpdateNotification() {
             const notification = document.getElementById('updateNotification');
             const reloadButton = document.getElementById('reloadButton');
-            notification.style.display = 'flex'; // Tampilkan notifikasi
-
+            notification.style.display = 'flex';
             reloadButton.addEventListener('click', () => {
-                // Kirim pesan ke service worker untuk segera aktif
                 newWorker.postMessage({ action: 'skipWaiting' });
             });
         }
-
         if ('serviceWorker' in navigator) {
             navigator.serviceWorker.register('./sw.js').then(reg => {
-                // Cek jika ada worker yang sedang menunggu untuk aktif
                 if (reg.waiting) {
                     newWorker = reg.waiting;
                     showUpdateNotification();
                     return;
                 }
-
-                // Cek jika ada worker baru yang ditemukan saat runtime
                 reg.addEventListener('updatefound', () => {
                     newWorker = reg.installing;
                     newWorker.addEventListener('statechange', () => {
-                        // Jika worker baru sudah selesai install dan sedang menunggu
                         if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
                             showUpdateNotification();
                         }
@@ -361,8 +355,6 @@
             }).catch(error => {
                 console.log('Registrasi Service Worker gagal:', error);
             });
-
-            // Reload halaman setelah worker baru mengambil alih
             let refreshing;
             navigator.serviceWorker.addEventListener('controllerchange', () => {
                 if (refreshing) return;
@@ -370,57 +362,36 @@
                 refreshing = true;
             });
         }
-      
-    // ... (Kode JavaScript Anda untuk checkbox dan PWA update) ...
 
-    // --- [TAMBAHKAN INI] LOGIKA UNTUK PROMPT INSTALASI KUSTOM ---
+        // --- LOGIKA PROMPT INSTALASI KUSTOM ---
+        let deferredPrompt;
+        const installContainer = document.getElementById('install-container');
+        const installButton = document.getElementById('install-button');
 
-    let deferredPrompt; // Variabel untuk menyimpan event 'beforeinstallprompt'
-    const installContainer = document.getElementById('install-container');
-    const installButton = document.getElementById('install-button');
+        window.addEventListener('beforeinstallprompt', (e) => {
+            e.preventDefault();
+            deferredPrompt = e;
+            installContainer.classList.remove('hidden');
+        });
 
-    // 1. Dengarkan event 'beforeinstallprompt'
-    window.addEventListener('beforeinstallprompt', (e) => {
-        // Mencegah mini-infobar default muncul di Chrome
-        e.preventDefault();
-        // Simpan event agar bisa dipicu nanti
-        deferredPrompt = e;
-        // Tampilkan UI/banner instalasi kustom kita
-        console.log('`beforeinstallprompt` event ditangkap. Tampilkan tombol install.');
-        installContainer.classList.remove('hidden');
-    });
+        installButton.addEventListener('click', async () => {
+            installContainer.classList.add('hidden');
+            if (deferredPrompt) {
+                deferredPrompt.prompt();
+                const { outcome } = await deferredPrompt.userChoice;
+                console.log(`Respons pengguna: ${outcome}`);
+                deferredPrompt = null;
+            }
+        });
 
-    // 2. Tambahkan event listener untuk tombol instalasi kustom
-    installButton.addEventListener('click', async () => {
-        // Sembunyikan UI instalasi kita, karena prompt hanya bisa dipanggil sekali
-        installContainer.classList.add('hidden');
-
-        if (deferredPrompt) {
-            // Tampilkan prompt instalasi browser
-            deferredPrompt.prompt();
-
-            // Tunggu respons dari pengguna
-            const { outcome } = await deferredPrompt.userChoice;
-            console.log(`Respons pengguna: ${outcome}`);
-
-            // Kita tidak bisa menggunakan event ini lagi, jadi kita bersihkan
+        window.addEventListener('appinstalled', () => {
+            console.log('Aplikasi berhasil di-install!');
+            installContainer.classList.add('hidden');
             deferredPrompt = null;
-        }
-    });
-
-    // 3. (Opsional tapi bagus) Dengarkan event 'appinstalled'
-    // Event ini akan terpanggil jika aplikasi berhasil di-install
-    window.addEventListener('appinstalled', () => {
-        console.log('Aplikasi berhasil di-install!');
-        // Sembunyikan UI instalasi kita secara permanen
-        installContainer.classList.add('hidden');
-        deferredPrompt = null;
-    });
-
-
+        });
     </script>
+    
+    <!-- Script ini biarkan terpisah jika memang ada -->
     <script src="main.js" defer></script>
-
 </body>
-
 </html>
