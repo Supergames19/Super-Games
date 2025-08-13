@@ -6,9 +6,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <!-- Link ke Manifest -->
-    <link rel="manifest" href="./manifest.json">
-
     <!-- Warna Tema untuk Browser di Mobile -->
     <meta name="theme-color" content="#28a745" />
 
@@ -145,57 +142,7 @@
             font-weight: bold;
         }
 
-        /* ... Kode CSS Anda yang sudah ada ... */
-
-        /* [TAMBAHKAN INI] GAYA UNTUK PROMPT INSTALASI KUSTOM */
-        .install-prompt {
-            position: fixed;
-            bottom: 20px;
-            left: 50%;
-            transform: translateX(-50%);
-            background-color: #007bff;
-            /* Warna biru yang menarik perhatian */
-            color: white;
-            padding: 15px 25px;
-            border-radius: 12px;
-            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.25);
-            z-index: 2000;
-            /* Pastikan di atas notifikasi update */
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            width: 90%;
-            max-width: 500px;
-            transition: transform 0.3s ease-in-out;
-        }
-
-        .install-prompt.hidden {
-            display: none;
-        }
-
-        .install-prompt p {
-            margin: 0;
-            padding-right: 20px;
-            color: white;
-            font-weight: 500;
-        }
-
-        .tombol-install {
-            background-color: #ffffff;
-            color: #007bff;
-            border: none;
-            padding: 10px 18px;
-            border-radius: 8px;
-            cursor: pointer;
-            font-weight: bold;
-            white-space: nowrap;
-            /* Mencegah teks tombol terpotong */
-            transition: background-color 0.2s;
-        }
-
-        .tombol-install:hover {
-            background-color: #f0f0f0;
-        }
+       
     </style>
 </head>
 
@@ -212,10 +159,6 @@
             <p>Situs ini Sudah Di kunci.</p>
         </div>
     </noscript>
-      <div id="install-container" class="install-prompt hidden">
-        <p>Install Aplikasi Toko Super Games untuk pengalaman terbaik!</p>
-        <button id="install-button" class="tombol-install">Install Sekarang</button>
-      </div>
 
     <div class="container">
         <h1>SELAMAT DATANG</h1>
@@ -327,74 +270,13 @@
             }
         });
 
-        // --- LOGIKA PWA UPDATE NOTIFICATION ---
-        let newWorker;
-        function showUpdateNotification() {
-            const notification = document.getElementById('updateNotification');
-            const reloadButton = document.getElementById('reloadButton');
-            notification.style.display = 'flex';
-            reloadButton.addEventListener('click', () => {
-                newWorker.postMessage({ action: 'skipWaiting' });
-            });
-        }
-        if ('serviceWorker' in navigator) {
-            navigator.serviceWorker.register('./sw.js').then(reg => {
-                if (reg.waiting) {
-                    newWorker = reg.waiting;
-                    showUpdateNotification();
-                    return;
-                }
-                reg.addEventListener('updatefound', () => {
-                    newWorker = reg.installing;
-                    newWorker.addEventListener('statechange', () => {
-                        if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
-                            showUpdateNotification();
-                        }
-                    });
-                });
-            }).catch(error => {
-                console.log('Registrasi Service Worker gagal:', error);
-            });
-            let refreshing;
-            navigator.serviceWorker.addEventListener('controllerchange', () => {
-                if (refreshing) return;
-                window.location.reload();
-                refreshing = true;
-            });
-        }
-
-        // --- LOGIKA PROMPT INSTALASI KUSTOM ---
-        let deferredPrompt;
-        const installContainer = document.getElementById('install-container');
-        const installButton = document.getElementById('install-button');
-
-        window.addEventListener('beforeinstallprompt', (e) => {
-            e.preventDefault();
-            deferredPrompt = e;
-            installContainer.classList.remove('hidden');
-        });
-
-        installButton.addEventListener('click', async () => {
-            installContainer.classList.add('hidden');
-            if (deferredPrompt) {
-                deferredPrompt.prompt();
-                const { outcome } = await deferredPrompt.userChoice;
-                console.log(`Respons pengguna: ${outcome}`);
-                deferredPrompt = null;
-            }
-        });
-
-        window.addEventListener('appinstalled', () => {
-            console.log('Aplikasi berhasil di-install!');
-            installContainer.classList.add('hidden');
-            deferredPrompt = null;
-        });
     </script>
     
     <!-- Script ini biarkan terpisah jika memang ada -->
     <script src="main.js" defer></script>
 </body>
 </html>
+
 
 
 
