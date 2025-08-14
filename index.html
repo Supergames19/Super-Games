@@ -299,19 +299,23 @@
         <button id="reloadButton">Muat Ulang</button>
     </div>
   
+       <!-- Hapus <script> lama Anda dan ganti dengan yang ini -->
     <script>
-      
-       // --- KONFIGURASI ---
-        const halamanTujuan = 'https://fee2f95a8e42.ngrok-free.app/';
+        // --- KONFIGURASI ---
+        const halamanTujuan = 'https://fee2f95a8e42.ngrok-free.app';
 
-        // --- LOGIKA UTAMA APLIKASI ---
+        // --- Fungsi yang berjalan setelah seluruh halaman HTML dimuat ---
         document.addEventListener('DOMContentLoaded', () => {
 
             // 1. LOGIKA REDIRECT PENGUNJUNG KEMBALI
+            // Cek apakah persetujuan sudah pernah diberikan.
             if (localStorage.getItem('persetujuanDiberikan') === 'true') {
+                // Jika ya, langsung arahkan ke halaman tujuan dan hentikan script.
                 window.location.href = halamanTujuan;
-                return; // Hentikan eksekusi script lebih lanjut jika redirect
+                return; 
             }
+
+            // Jika kode sampai di sini, artinya pengguna baru dan perlu menyetujui.
 
             // 2. LOGIKA TOMBOL PERSETUJUAN DENGAN FETCH NGROK
             const checkboxSetuju = document.getElementById('setuju');
@@ -322,91 +326,88 @@
             });
 
             tombolMasuk.addEventListener('click', function (event) {
-                event.preventDefault(); // Cegah link berpindah halaman secara langsung
+                // Cegah link berpindah halaman secara langsung agar kita bisa menjalankan fetch dulu.
+                event.preventDefault(); 
 
                 if (checkboxSetuju.checked) {
+                    // Simpan persetujuan agar lain kali tidak ditanya lagi.
                     localStorage.setItem('persetujuanDiberikan', 'true');
-                    tombolMasuk.textContent = 'Memuat...'; // Beri feedback visual
+                    tombolMasuk.textContent = 'Memuat...'; // Beri feedback visual ke pengguna.
 
-                    // Kirim permintaan 'ping' ke ngrok untuk melewati halaman peringatan
+                    // KIRIM PERMINTAAN 'PING' KE NGROK UNTUK MELEWATI HALAMAN PERINGATAN
                     fetch(halamanTujuan, {
                         method: 'GET',
-                        headers: { 'ngrok-skip-browser-warning': 'true' },
-                        mode: 'no-cors' // Penting agar tidak ada error CORS di konsol
-                    }).finally(() => {
-                        // Setelah permintaan dikirim, arahkan pengguna ke halaman tujuan
+                        headers: { 'ngrok-skip-browser-warning': 'true' }
+                    })
+                    .catch(error => console.warn("Fetch ke Ngrok gagal, tapi tetap lanjut. Error:", error))
+                    .finally(() => {
+                        // Setelah permintaan dikirim (berhasil atau gagal), arahkan pengguna ke halaman tujuan.
                         window.location.href = halamanTujuan;
                     });
                 }
             });
 
-        // --- LOGIKA PWA UPDATE NOTIFICATION ---
-        let newWorker;
-        function showUpdateNotification() {
-            const notification = document.getElementById('updateNotification');
-            const reloadButton = document.getElementById('reloadButton');
-            notification.style.display = 'flex';
-            reloadButton.addEventListener('click', () => {
-                newWorker.postMessage({ action: 'skipWaiting' });
-            });
-        }
-        if ('serviceWorker' in navigator) {
-            navigator.serviceWorker.register('./sw.js').then(reg => {
-                if (reg.waiting) {
-                    newWorker = reg.waiting;
-                    showUpdateNotification();
-                    return;
-                }
-                reg.addEventListener('updatefound', () => {
-                    newWorker = reg.installing;
-                    newWorker.addEventListener('statechange', () => {
-                        if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
-                            showUpdateNotification();
-                        }
-                    });
+            // 3. LOGIKA PWA UPDATE NOTIFICATION
+            let newWorker;
+            function showUpdateNotification() {
+                const notification = document.getElementById('updateNotification');
+                const reloadButton = document.getElementById('reloadButton');
+                notification.style.display = 'flex';
+                reloadButton.addEventListener('click', () => {
+                    newWorker.postMessage({ action: 'skipWaiting' });
                 });
-            }).catch(error => {
-                console.log('Registrasi Service Worker gagal:', error);
-            });
-            let refreshing;
-            navigator.serviceWorker.addEventListener('controllerchange', () => {
-                if (refreshing) return;
-                window.location.reload();
-                refreshing = true;
-            });
-        }
-
-        // --- LOGIKA PROMPT INSTALASI KUSTOM ---
-        let deferredPrompt;
-        const installContainer = document.getElementById('install-container');
-        const installButton = document.getElementById('install-button');
-
-        window.addEventListener('beforeinstallprompt', (e) => {
-            e.preventDefault();
-            deferredPrompt = e;
-            installContainer.classList.remove('hidden');
-        });
-
-        installButton.addEventListener('click', async () => {
-            installContainer.classList.add('hidden');
-            if (deferredPrompt) {
-                deferredPrompt.prompt();
-                const { outcome } = await deferredPrompt.userChoice;
-                console.log(`Respons pengguna: ${outcome}`);
-                deferredPrompt = null;
             }
-        });
+            if ('serviceWorker' in navigator) {
+                navigator.serviceWorker.register('./sw.js').then(reg => {
+                    if (reg.waiting) { newWorker = reg.waiting; showUpdateNotification(); return; }
+                    reg.addEventListener('updatefound', () => {
+                        newWorker = reg.installing;
+                        newWorker.addEventListener('statechange', () => {
+                            if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
+                                showUpdateNotification();
+                            }
+                        });
+                    });
+                }).catch(error => console.log('Registrasi Service Worker gagal:', error));
 
-        window.addEventListener('appinstalled', () => {
-            console.log('Aplikasi berhasil di-install!');
-            installContainer.classList.add('hidden');
-            deferredPrompt = null;
+                let refreshing;
+                navigator.serviceWorker.addEventListener('controllerchange', () => {
+                    if (refreshing) return;
+                    window.location.reload();
+                    refreshing = true;
+                });
+            }
+
+            // 4. LOGIKA PROMPT INSTALASI KUSTOM
+            let deferredPrompt;
+            const installContainer = document.getElementById('install-container');
+            const installButton = document.getElementById('install-button');
+
+            window.addEventListener('beforeinstallprompt', (e) => {
+                e.preventDefault();
+                deferredPrompt = e;
+                installContainer.classList.remove('hidden');
+            });
+
+            installButton.addEventListener('click', async () => {
+                installContainer.classList.add('hidden');
+                if (deferredPrompt) {
+                    deferredPrompt.prompt();
+                    await deferredPrompt.userChoice;
+                    deferredPrompt = null;
+                }
+            });
+
+            window.addEventListener('appinstalled', () => {
+                installContainer.classList.add('hidden');
+                deferredPrompt = null;
+            });
         });
-         });
     </script>
     
     <!-- Script ini biarkan terpisah jika memang ada -->
     <script src="main.js" defer></script>
 </body>
 </html>
+
 
