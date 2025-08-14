@@ -323,19 +323,9 @@
                 localStorage.setItem('persetujuanDiberikan', 'true');
             } else {
                 event.preventDefault(); // Mencegah pindah halaman jika checkbox tidak dicentang
-            
-         // Kirim permintaan 'ping' ke ngrok untuk melewati halaman peringatan
-                    fetch(halamanTujuan, {
-                        method: 'GET',
-                        headers: { 'ngrok-skip-browser-warning': 'true' },
-                        mode: 'no-cors' // Penting agar tidak ada error CORS di konsol
-                    }).finally(() => {
-                        // Setelah permintaan dikirim, arahkan pengguna ke halaman tujuan
-                        window.location.href = halamanTujuan;
-                    });
-                }
-           });
-
+            }
+        });
+           
         // --- LOGIKA PWA UPDATE NOTIFICATION ---
         let newWorker;
         function showUpdateNotification() {
@@ -406,5 +396,6 @@
 
 </body>
 </html>
+
 
 
