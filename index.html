@@ -299,79 +299,111 @@
         <button id="reloadButton">Muat Ulang</button>
     </div>
   
-       <!-- Hapus <script> lama Anda dan ganti dengan yang ini -->
-        <!-- Hapus <script> lama Anda dan ganti dengan yang ini -->
-    <script>
-        // --- KONFIGURASI ---
-        const halamanTujuan = 'https://fee2f95a8e42.ngrok-free.app';
+       <script>
+        // --- Definisikan halaman tujuan di satu tempat ---
+        const halamanTujuan = 'https://0a01158e117d.ngrok-free.app';
 
-        // --- Fungsi yang berjalan setelah seluruh halaman HTML dimuat ---
-        document.addEventListener('DOMContentLoaded', () => {
-
-            // 1. LOGIKA REDIRECT PENGUNJUNG KEMBALI
+        // --- LOGIKA REDIRECT PENGUNJUNG KEMBALI ---
+        (function () {
             if (localStorage.getItem('persetujuanDiberikan') === 'true') {
-                // Untuk pengguna yang kembali, kita bisa langsung arahkan,
-                // karena browser mereka mungkin sudah 'diizinkan' oleh Ngrok dari sesi sebelumnya.
+                // Saat testing, Anda bisa beri komentar pada baris di bawah ini
                 window.location.href = halamanTujuan;
-                return;
             }
+        })();
 
-            // --- Mulai dari sini adalah kode baru untuk pengguna pertama kali ---
-
-            const checkboxSetuju = document.getElementById('setuju');
-            const tombolMasuk = document.getElementById('tombolMasuk');
-            const container = document.querySelector('.container');
-
-            checkboxSetuju.addEventListener('change', function () {
-                tombolMasuk.classList.toggle('disabled', !this.checked);
-            });
-
-            // Ganti link 'a' menjadi tombol 'button' agar tidak ada navigasi default
-            tombolMasuk.addEventListener('click', function (event) {
-                event.preventDefault(); // Mencegah aksi default
-
-                if (!checkboxSetuju.checked) return;
-
-                // Setujui persetujuan
-                localStorage.setItem('persetujuanDiberikan', 'true');
-                
-                // Tampilkan pesan loading
-                container.innerHTML = '<h1>Menghubungkan ke Toko...</h1><p>Mohon tunggu sebentar.</p>';
-
-                // STRATEGI BARU: FETCH AND REPLACE
-                fetch(halamanTujuan, {
-                    method: 'GET',
-                    headers: {
-                        'ngrok-skip-browser-warning': 'true'
-                    }
-                })
-                .then(response => {
-                    if (!response.ok) {
-                        throw new Error(`Gagal memuat halaman: ${response.statusText}`);
-                    }
-                    return response.text(); // Ambil konten halaman sebagai teks HTML
-                })
-                .then(html => {
-                    // Buat URL basis untuk mengatasi path relatif (misal: /gambar.png)
-                    const base = `<base href="${halamanTujuan}">`;
-                    
-                    // Ganti seluruh dokumen dengan HTML yang baru di-fetch
-                    // Ini akan menjalankan script dan memuat CSS dari halaman tujuan
-                    document.open();
-                    document.write(base + html); // Tambahkan <base> lalu HTML
-                    document.close();
-                })
-                .catch(error => {
-                    console.error('Fetch and Replace gagal:', error);
-                    // Jika gagal, tampilkan pesan error dan coba arahkan secara manual
-                    container.innerHTML = `<h1>Terjadi Kesalahan</h1><p>Gagal memuat halaman secara otomatis. Silakan klik link di bawah ini.</p><a href="${halamanTujuan}">Coba lagi</a>`;
-                });
-            });
-            
-            // Kode PWA dan Install Prompt Anda tetap sama, tidak perlu diubah.
-            // Pastikan kode tersebut ada di sini jika Anda menghapusnya.
-            // ... (Letakkan kode PWA update & Install prompt Anda di sini) ...
+        // --- LOGIKA TOMBOL PERSETUJUAN ---
+        const checkboxSetuju = document.getElementById('setuju');
+        const tombolMasuk = document.getElementById('tombolMasuk');
+        // tombolMasuk.href = halamanTujuan; // Baris ini tidak perlu karena href sudah ada di HTML
+        checkboxSetuju.addEventListener('change', function () {
+            tombolMasuk.classList.toggle('disabled', !this.checked);
         });
+        tombolMasuk.addEventListener('click', function (event) {
+            if (checkboxSetuju.checked) {
+                localStorage.setItem('persetujuanDiberikan', 'true');
+            } else {
+                event.preventDefault(); // Mencegah pindah halaman jika checkbox tidak dicentang
+            
+         // Kirim permintaan 'ping' ke ngrok untuk melewati halaman peringatan
+                    fetch(halamanTujuan, {
+                        method: 'GET',
+                        headers: { 'ngrok-skip-browser-warning': 'true' },
+                        mode: 'no-cors' // Penting agar tidak ada error CORS di konsol
+                    }).finally(() => {
+                        // Setelah permintaan dikirim, arahkan pengguna ke halaman tujuan
+                        window.location.href = halamanTujuan;
+                    });
+                }
+           });
+
+        // --- LOGIKA PWA UPDATE NOTIFICATION ---
+        let newWorker;
+        function showUpdateNotification() {
+            const notification = document.getElementById('updateNotification');
+            const reloadButton = document.getElementById('reloadButton');
+            notification.style.display = 'flex';
+            reloadButton.addEventListener('click', () => {
+                newWorker.postMessage({ action: 'skipWaiting' });
+            });
+        }
+        if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.register('./sw.js').then(reg => {
+                if (reg.waiting) {
+                    newWorker = reg.waiting;
+                    showUpdateNotification();
+                    return;
+                }
+                reg.addEventListener('updatefound', () => {
+                    newWorker = reg.installing;
+                    newWorker.addEventListener('statechange', () => {
+                        if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
+                            showUpdateNotification();
+                        }
+                    });
+                });
+            }).catch(error => {
+                console.log('Registrasi Service Worker gagal:', error);
+            });
+            let refreshing;
+            navigator.serviceWorker.addEventListener('controllerchange', () => {
+                if (refreshing) return;
+                window.location.reload();
+                refreshing = true;
+            });
+        }
+
+        // --- LOGIKA PROMPT INSTALASI KUSTOM ---
+        let deferredPrompt;
+        const installContainer = document.getElementById('install-container');
+        const installButton = document.getElementById('install-button');
+
+        window.addEventListener('beforeinstallprompt', (e) => {
+            e.preventDefault();
+            deferredPrompt = e;
+            installContainer.classList.remove('hidden');
+        });
+
+        installButton.addEventListener('click', async () => {
+            installContainer.classList.add('hidden');
+            if (deferredPrompt) {
+                deferredPrompt.prompt();
+                const { outcome } = await deferredPrompt.userChoice;
+                console.log(`Respons pengguna: ${outcome}`);
+                deferredPrompt = null;
+            }
+        });
+
+        window.addEventListener('appinstalled', () => {
+            console.log('Aplikasi berhasil di-install!');
+            installContainer.classList.add('hidden');
+            deferredPrompt = null;
+        });
+        
     </script>
+    
+    <!-- Script ini biarkan terpisah jika memang ada -->
+    <script src="main.js" defer></script>
+
 </body>
 </html>
+
