@@ -10,11 +10,10 @@
     <link rel="manifest" href="./manifest.json">
 
     <!-- Warna Tema untuk Browser di Mobile -->
-    <meta name="theme-color" content="#28a745" >
+    <meta name="theme-color" content="#28a745">
 
     <title>Peraturan & Ketentuan Toko</title>
     <style>
-  
         * {
             margin: 0;
             padding: 0;
@@ -211,10 +210,10 @@
             <p>Situs ini Sudah Di kunci.</p>
         </div>
     </noscript>
-      <div id="install-container" class="install-prompt hidden">
+    <div id="install-container" class="install-prompt hidden">
         <p>Install Aplikasi Toko Super Games untuk pengalaman terbaik!</p>
         <button id="install-button" class="tombol-install">Install Sekarang</button>
-      </div>
+    </div>
 
     <div class="container">
         <h1>SELAMAT DATANG</h1>
@@ -289,7 +288,7 @@
         </div>
 
         <!-- GANTI 'halaman-utama.html' dengan link tujuan Anda (maintens.html)-->
-        <a href="https://9ce34c1ad1c7.ngrok-free.app" id="tombolMasuk" class="tombol-masuk disabled">
+        <a href="https://b32557f75d35.ngrok-free.app" id="tombolMasuk" class="tombol-masuk disabled">
             Masuk
         </a>
     </div>
@@ -298,16 +297,58 @@
         <p>Versi baru tersedia!</p>
         <button id="reloadButton">Muat Ulang</button>
     </div>
-  
-       <script>
+
+    <script>
+        /**
+     * Fungsi ini akan mencoba "ping" URL tujuan.
+     * Jika berhasil, akan redirect ke URL tersebut.
+     * Jika gagal (timeout atau error), akan redirect ke halaman maintenance.
+     * @param {string} urlTujuan - URL yang ingin dicek dan dituju.
+     */
+        async function cobaRedirect(urlTujuan) {
+            const halamanMaintenance = './maintens.html';
+
+            // Tampilkan pesan di console untuk debugging
+            console.log(`Mencoba menghubungi ${urlTujuan}...`);
+
+            // Gunakan AbortController untuk membuat timeout manual
+            const controller = new AbortController();
+            const timeoutId = setTimeout(() => {
+                controller.abort();
+                console.log('Request timeout.');
+            }, 5000); // Timeout setelah 5 detik
+
+            try {
+                // Coba fetch dengan mode 'no-cors' agar tidak error karena kebijakan CORS Ngrok.
+                // Kita tidak butuh responsnya, hanya ingin tahu apakah server merespons.
+                await fetch(urlTujuan, {
+                    method: 'HEAD', // HEAD lebih ringan dari GET, hanya minta header
+                    signal: controller.signal,
+                    mode: 'no-cors'
+                });
+
+                // Jika fetch berhasil, batalkan timeout dan redirect ke tujuan
+                clearTimeout(timeoutId);
+                console.log('Koneksi berhasil. Mengalihkan...');
+                window.location.href = urlTujuan;
+
+            } catch (error) {
+                // Jika fetch gagal (karena timeout, network error, server down)
+                clearTimeout(timeoutId);
+                console.error('Koneksi gagal atau server tidak merespons. Mengalihkan ke halaman maintenance.', error);
+                window.location.href = halamanMaintenance;
+            }
+        }
+
+
         // --- Definisikan halaman tujuan di satu tempat ---
-        const halamanTujuan = 'https://9ce34c1ad1c7.ngrok-free.app';
+        const halamanTujuan = 'https://b32557f75d35.ngrok-free.app';
 
         // --- LOGIKA REDIRECT PENGUNJUNG KEMBALI ---
         (function () {
             if (localStorage.getItem('persetujuanDiberikan') === 'true') {
-                // Saat testing, Anda bisa beri komentar pada baris di bawah ini
-                window.location.href = halamanTujuan;
+                // Panggil fungsi pengecekan, bukan redirect langsung
+                cobaRedirect(halamanTujuan);
             }
         })();
 
@@ -318,14 +359,22 @@
         checkboxSetuju.addEventListener('change', function () {
             tombolMasuk.classList.toggle('disabled', !this.checked);
         });
+        // --- LOGIKA TOMBOL PERSETUJUAN ---
+        // ... (baris checkbox tidak berubah) ...
         tombolMasuk.addEventListener('click', function (event) {
+            // Selalu cegah aksi default dari link <a> agar kita bisa mengontrolnya
+            event.preventDefault();
+
             if (checkboxSetuju.checked) {
                 localStorage.setItem('persetujuanDiberikan', 'true');
+                // Panggil fungsi pengecekan kita
+                cobaRedirect(halamanTujuan);
             } else {
-                event.preventDefault(); // Mencegah pindah halaman jika checkbox tidak dicentang
+                // Jika tidak dicentang, tidak melakukan apa-apa
+                console.log('Checkbox harus dicentang.');
             }
         });
-           
+
         // --- LOGIKA PWA UPDATE NOTIFICATION ---
         let newWorker;
         function showUpdateNotification() {
@@ -388,14 +437,12 @@
             installContainer.classList.add('hidden');
             deferredPrompt = null;
         });
-        
+
     </script>
-    
+
     <!-- Script ini biarkan terpisah jika memang ada -->
     <script src="main.js" defer></script>
 
 </body>
+
 </html>
-
-
-
