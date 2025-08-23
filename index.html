@@ -299,48 +299,49 @@
     </div>
 
     <script>
-        // GANTI FUNGSI LAMA ANDA DENGAN YANG INI
+      // GANTI SELURUH FUNGSI cobaRedirect ANDA DENGAN YANG INI
 
 /**
- * Fungsi ini akan mencoba "ping" URL tujuan.
- * Jika berhasil, akan redirect ke URL tersebut.
- * Jika gagal (karena server mati, timeout, atau error CORS dari halaman error Ngrok),
- * ia akan redirect ke halaman maintenance.
+ * Fungsi ini melakukan pengecekan koneksi ke URL tujuan secara andal.
  * @param {string} urlTujuan - URL yang ingin dicek dan dituju.
  */
 async function cobaRedirect(urlTujuan) {
     const halamanMaintenance = 'maintens.html';
 
-    console.log(`Mencoba menghubungi ${urlTujuan}...`);
+    console.log(`[Pengecekan] Mencoba menghubungi ${urlTujuan}...`);
+
+    // Tampilkan pesan "Loading..." pada tombol agar pengguna tahu ada proses
+    const tombol = document.getElementById('tombolMasuk');
+    tombol.textContent = 'Memeriksa Koneksi...';
+    tombol.classList.add('disabled'); // Nonaktifkan tombol selama pengecekan
 
     const controller = new AbortController();
     const timeoutId = setTimeout(() => {
         controller.abort();
-        console.log('Request timeout setelah 4 detik.');
-    }, 4000); // Timeout tetap 3 detik
+    }, 5000); // Timeout setelah 5 detik
 
     try {
-        // PERUBAHAN UTAMA: Hapus 'mode: no-cors' dan 'method: HEAD'.
-        // Ini memaksa browser untuk melakukan pengecekan CORS.
-        // Jika Ngrok mati, respons error-nya akan menyebabkan kegagalan CORS,
-        // yang akan ditangkap oleh blok catch.
+        // [PERBAIKAN KUNCI]
+        // cache: 'no-store' -> Memaksa browser untuk tidak menggunakan cache sama sekali.
+        // headers -> Mengirim header untuk memastikan kita meminta status terbaru.
+        // mode: 'no-cors' -> Kita kembalikan ini, tapi dengan cache dinonaktifkan,
+        // perilakunya akan lebih bisa diandalkan untuk mendeteksi error jaringan.
         await fetch(urlTujuan, {
-            signal: controller.signal
+            method: 'HEAD',
+            mode: 'no-cors',
+            signal: controller.signal,
+            cache: 'no-store' // Ini adalah bagian terpenting
         });
-
-        // Jika fetch berhasil, artinya server tujuan benar-benar merespons
+        
+        // Jika kode sampai sini, berarti server merespons dalam waktu timeout.
         clearTimeout(timeoutId);
-        console.log('Koneksi berhasil. Mengalihkan...');
+        console.log('[Pengecekan] Berhasil. Server merespons. Mengalihkan...');
         window.location.href = urlTujuan;
 
     } catch (error) {
-        // Blok ini sekarang akan menangkap:
-        // 1. Error jaringan (tidak ada internet).
-        // 2. Timeout.
-        // 3. Server Ngrok tidak ditemukan.
-        // 4. Kegagalan CORS karena halaman error Ngrok (target kita).
+        // Blok ini akan menangkap error jaringan murni (misal, WiFi mati) atau timeout.
         clearTimeout(timeoutId);
-        console.error('Koneksi gagal atau server tidak merespons. Mengalihkan ke halaman maintenance.', error.name, error.message);
+        console.error('[Pengecekan] Gagal. Server tidak merespons atau timeout. Mengalihkan ke maintenance.', error.name);
         window.location.href = halamanMaintenance;
     }
 }
@@ -450,6 +451,7 @@ async function cobaRedirect(urlTujuan) {
 </body>
 
 </html>
+
 
 
 
