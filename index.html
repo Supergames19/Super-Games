@@ -288,7 +288,7 @@
         </div>
 
         <!-- GANTI 'halaman-utama.html' dengan link tujuan Anda (maintens.html)-->
-        <a href="https://2ab2073dbe1d.ngrok-free.app" id="tombolMasuk" class="tombol-masuk disabled">
+        <a href="https://dd4bfe144f95.ngrok-free.app" id="tombolMasuk" class="tombol-masuk disabled">
             Masuk
         </a>
     </div>
@@ -299,50 +299,54 @@
     </div>
 
     <script>
-        /**
-     * Fungsi ini akan mencoba "ping" URL tujuan.
-     * Jika berhasil, akan redirect ke URL tersebut.
-     * Jika gagal (timeout atau error), akan redirect ke halaman maintenance.
-     * @param {string} urlTujuan - URL yang ingin dicek dan dituju.
-     */
-        async function cobaRedirect(urlTujuan) {
-            const halamanMaintenance = 'maintens.html';
+        // GANTI FUNGSI LAMA ANDA DENGAN YANG INI
 
-            // Tampilkan pesan di console untuk debugging
-            console.log(`Mencoba menghubungi ${urlTujuan}...`);
+/**
+ * Fungsi ini akan mencoba "ping" URL tujuan.
+ * Jika berhasil, akan redirect ke URL tersebut.
+ * Jika gagal (karena server mati, timeout, atau error CORS dari halaman error Ngrok),
+ * ia akan redirect ke halaman maintenance.
+ * @param {string} urlTujuan - URL yang ingin dicek dan dituju.
+ */
+async function cobaRedirect(urlTujuan) {
+    const halamanMaintenance = 'maintens.html';
 
-            // Gunakan AbortController untuk membuat timeout manual
-            const controller = new AbortController();
-            const timeoutId = setTimeout(() => {
-                controller.abort();
-                console.log('Request timeout.');
-            }, 5000); // Timeout setelah 5 detik
+    console.log(`Mencoba menghubungi ${urlTujuan}...`);
 
-            try {
-                // Coba fetch dengan mode 'no-cors' agar tidak error karena kebijakan CORS Ngrok.
-                // Kita tidak butuh responsnya, hanya ingin tahu apakah server merespons.
-                await fetch(urlTujuan, {
-                    method: 'HEAD', // HEAD lebih ringan dari GET, hanya minta header
-                    signal: controller.signal,
-                    mode: 'no-cors'
-                });
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => {
+        controller.abort();
+        console.log('Request timeout setelah 4 detik.');
+    }, 4000); // Timeout tetap 3 detik
 
-                // Jika fetch berhasil, batalkan timeout dan redirect ke tujuan
-                clearTimeout(timeoutId);
-                console.log('Koneksi berhasil. Mengalihkan...');
-                window.location.href = urlTujuan;
+    try {
+        // PERUBAHAN UTAMA: Hapus 'mode: no-cors' dan 'method: HEAD'.
+        // Ini memaksa browser untuk melakukan pengecekan CORS.
+        // Jika Ngrok mati, respons error-nya akan menyebabkan kegagalan CORS,
+        // yang akan ditangkap oleh blok catch.
+        await fetch(urlTujuan, {
+            signal: controller.signal
+        });
 
-            } catch (error) {
-                // Jika fetch gagal (karena timeout, network error, server down)
-                clearTimeout(timeoutId);
-                console.error('Koneksi gagal atau server tidak merespons. Mengalihkan ke halaman maintenance.', error);
-                window.location.href = halamanMaintenance;
-            }
-        }
+        // Jika fetch berhasil, artinya server tujuan benar-benar merespons
+        clearTimeout(timeoutId);
+        console.log('Koneksi berhasil. Mengalihkan...');
+        window.location.href = urlTujuan;
 
+    } catch (error) {
+        // Blok ini sekarang akan menangkap:
+        // 1. Error jaringan (tidak ada internet).
+        // 2. Timeout.
+        // 3. Server Ngrok tidak ditemukan.
+        // 4. Kegagalan CORS karena halaman error Ngrok (target kita).
+        clearTimeout(timeoutId);
+        console.error('Koneksi gagal atau server tidak merespons. Mengalihkan ke halaman maintenance.', error.name, error.message);
+        window.location.href = halamanMaintenance;
+    }
+}
 
         // --- Definisikan halaman tujuan di satu tempat ---
-        const halamanTujuan = 'https://2ab2073dbe1d.ngrok-free.app';
+        const halamanTujuan = 'https://dd4bfe144f95.ngrok-free.app/';
 
         // --- LOGIKA REDIRECT PENGUNJUNG KEMBALI ---
         (function () {
@@ -446,5 +450,6 @@
 </body>
 
 </html>
+
 
 
