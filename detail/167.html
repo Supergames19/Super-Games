@@ -1,0 +1,667 @@
+<!DOCTYPE html>
+<!-- saved from url=(0037)http://192.168.1.14/detail.php?id=173 -->
+<html lang="id"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <!-- TAMBAHKAN META TAG INI -->
+    <meta name="robots" content="noindex, nofollow">
+    
+    <title>Stand Mic - TokoKu</title>
+   <link rel="stylesheet" href="./Data/style.css">
+
+    <style>
+    /* General Layout */
+body {
+    font-family: sans-serif;
+    margin: 0;
+    background-color: #f4f4f4;
+    color: #333;
+}
+
+main {
+    max-width: 1200px;
+    margin: 20px auto;
+    padding: 20px;
+    background-color: #fff;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    border-radius: 8px;
+}
+
+.tombol-kembali {
+    display: inline-block;
+    margin-bottom: 20px;
+    color: #007bff;
+    text-decoration: none;
+    font-size: 24px;
+    font-weight: bold;
+}
+
+.tombol-kembali:hover {
+    text-decoration: underline;
+}
+
+/* Product Detail Container (Flexbox) */
+.detail-container {
+    display: flex; /* Menggunakan Flexbox */
+    gap: 30px; /* Jarak antar kolom */
+    flex-wrap: wrap; /* Izinkan wrap pada layar kecil */
+    margin-bottom: 40px;
+}
+
+.product-image-detail {
+    flex: 1 1 400px; /* Fleksibel, tapi coba pertahankan lebar 400px */
+    max-width: 50%; /* Batasi lebar gambar */
+    min-width: 300px; /* Minimal lebar gambar */
+    text-align: center;
+}
+
+.product-image-detail img {
+    max-width: 100%;
+    height: auto;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.product-info-detail {
+    flex: 1 1 500px; /* Fleksibel, tapi coba pertahankan lebar 500px */
+    padding-right: 20px;
+}
+
+.product-info-detail h2 {
+    font-size: 36px;
+    margin-top: 0;
+    margin-bottom: 10px;
+    color: #333;
+}
+
+.rating-summary {
+    display: flex;
+    align-items: center;
+    margin-bottom: 15px;
+    font-size: 18px;
+}
+
+.rating-summary .bintang {
+    margin-right: 10px;
+    font-size: 24px; /* Ukuran bintang */
+}
+
+.harga-detail {
+    font-size: 40px;
+    color: #e44d26;
+    margin-bottom: 10px;
+    font-weight: bold;
+}
+
+.stok-detail {
+    font-size: 20px;
+    margin-bottom: 20px;
+    color: #555;
+}
+
+/* Deskripsi yang bisa di-scroll */
+.description-and-video-wrapper {
+    margin-bottom: 25px;
+}
+
+.deskripsi-scroll-container {
+    max-height: 250px; /* Batasi tinggi maksimum */
+    overflow-y: auto; /* Aktifkan scroll vertikal */
+    padding-right: 15px; /* Beri sedikit padding untuk scrollbar */
+    margin-bottom: 15px;
+    /* Opsional: gaya scrollbar */
+    scrollbar-width: thin; /* Firefox */
+    scrollbar-color: rgba(0,0,0,0.2) transparent; /* Firefox */
+}
+
+.deskripsi-scroll-container::-webkit-scrollbar {
+    width: 8px; /* Chrome, Safari, Edge */
+}
+
+.deskripsi-scroll-container::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+.deskripsi-scroll-container::-webkit-scrollbar-thumb {
+    background-color: rgba(0,0,0,0.2);
+    border-radius: 10px;
+    border: 2px solid transparent;
+}
+
+
+.deskripsi-detail {
+    font-size: 18px;
+    line-height: 1.6;
+    color: #444;
+}
+
+.tombol-video {
+    display: inline-flex;
+    align-items: center;
+    padding: 12px 25px;
+    border: none;
+    border-radius: 50px;
+    background-image: linear-gradient(to right, #ee732bff, #90e6fc, #f1663cff );
+    color: white;
+    font-size: 20px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    text-decoration: none;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+}
+
+.tombol-video svg {
+    margin-right: 10px;
+}
+
+.tombol-video:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.3);
+}
+
+/* Form Beli */
+.form-beli {
+    margin-top: 30px;
+    border-top: 1px solid #eee;
+    padding-top: 20px;
+}
+
+.input-jumlah {
+    display: flex;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.input-jumlah label {
+    font-size: 20px;
+    margin-right: 15px;
+    font-weight: bold;
+}
+
+.input-jumlah input[type="number"] {
+    width: 80px;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 20px;
+    text-align: center;
+}
+
+.tombol-beli-besar {
+    padding: 15px 30px;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 50px;
+    font-size: 22px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    box-shadow: 0 4px 10px rgba(0, 123, 255, 0.3);
+}
+
+.tombol-beli-besar:hover {
+    background-color: #0056b3;
+    transform: translateY(-1px);
+    box-shadow: 0 6px 12px rgba(0, 123, 255, 0.4);
+}
+
+/* Responsive adjustments */
+@media (max-width: 992px) {
+    .detail-container {
+        flex-direction: column; /* Tumpuk kolom di layar kecil */
+        align-items: center;
+    }
+
+    .product-image-detail, .product-info-detail {
+        max-width: 100%;
+        width: 100%; /* Pastikan mengisi lebar penuh */
+        padding-right: 0;
+    }
+}
+
+@media (max-width: 768px) {
+    .product-info-detail h2 {
+        font-size: 30px;
+    }
+    .harga-detail {
+        font-size: 32px;
+    }
+    .tombol-beli-besar {
+        font-size: 20px;
+        padding: 12px 25px;
+    }
+}
+
+/* --- Ulasan Section (Tambahan/Perbaikan) --- */
+.ulasan-section {
+    margin-top: 40px;
+    padding-top: 30px;
+    border-top: 1px solid #eee;
+}
+
+.ulasan-section h2 {
+    font-size: 28px;
+    margin-bottom: 20px;
+    color: #333;
+}
+
+.btn-beri-ulasan {
+    background-color: #28a745;
+    color: white;
+    padding: 12px 25px;
+    border: none;
+    border-radius: 5px;
+    font-size: 18px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    margin-bottom: 20px;
+}
+
+.btn-beri-ulasan:hover {
+    background-color: #218838;
+}
+
+.daftar-ulasan {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 25px;
+}
+
+.item-ulasan {
+    background-color: #f9f9f9;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+}
+
+.item-ulasan strong {
+    font-size: 20px;
+    color: #333;
+    display: block;
+    margin-bottom: 5px;
+}
+
+.item-ulasan .rating-summary {
+    font-size: 16px;
+    color: #666;
+    margin-bottom: 10px;
+}
+
+.item-ulasan .rating-summary .bintang {
+    font-size: 18px;
+}
+
+.item-ulasan p {
+    font-size: 17px;
+    line-height: 1.5;
+    color: #555;
+    margin-top: 10px;
+    margin-bottom: 15px;
+}
+
+.gambar-ulasan-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-top: 10px;
+}
+
+.gambar-ulasan-item {
+    width: 80px;
+    height: 80px;
+    object-fit: cover;
+    border-radius: 5px;
+    cursor: zoom-in;
+    border: 1px solid #ddd;
+    transition: transform 0.2s ease;
+}
+
+.gambar-ulasan-item:hover {
+    transform: scale(1.05);
+}
+
+
+/* Modal Styles (General for Lightbox & Ulasan) */
+.modal {
+    display: none; /* Hidden by default */
+    position: fixed; /* Stay in place */
+    z-index: 1000; /* Sit on top */
+    left: 0;
+    top: 0;
+    width: 100%; /* Full width */
+    height: 100%; /* Full height */
+    overflow: auto; /* Enable scroll if needed */
+    background-color: rgba(0,0,0,0.8); /* Black w/ opacity */
+    justify-content: center; /* Center content horizontally */
+    align-items: center; /* Center content vertically */
+}
+
+.modal-content {
+    background-color: #fefefe;
+    margin: auto;
+    padding: 30px;
+    border-radius: 8px;
+    width: 90%;
+    max-width: 600px;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+    position: relative;
+}
+
+.close-button {
+    color: #aaa;
+    position: absolute;
+    top: 10px;
+    right: 25px;
+    font-size: 40px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: color 0.3s;
+}
+
+.close-button:hover,
+.close-button:focus {
+    color: #000;
+    text-decoration: none;
+}
+
+/* Lightbox Specific */
+.lightbox-content {
+    margin: auto;
+    display: block;
+    max-width: 90%;
+    max-height: 90vh; /* Adjust height for video */
+    width: auto;
+    height: auto;
+}
+
+#lightboxImage {
+    max-width: 100%;
+    max-height: 80vh;
+    object-fit: contain;
+}
+
+/* Ulasan Modal Form Styling */
+.form-group {
+    margin-bottom: 15px;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: bold;
+    font-size: 18px;
+}
+
+.form-group textarea,
+.form-group input[type="file"] {
+    width: calc(100% - 20px);
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 16px;
+}
+
+.rating-input {
+    display
+ 
+</style>
+
+</head>
+<body>
+     <!-- PERLINDUNGAN: Blokir jika JavaScript mati -->
+    <noscript>
+        <style>
+            /* Sembunyikan semua konten jika JS mati */
+            body > *:not(noscript) {
+                display: none !important;
+            }
+        </style>
+        <div style="text-align: center; padding: 50px; font-family: sans-serif;">
+            <h1>Maaf Tidak Di izinkan</h1>
+            <p>Situs ini Sudah Di kunci.</p>
+        </div>
+    </noscript>
+    <header>
+    <div class="header-content">
+        <a href="http://192.168.1.14/index.php" class="header-logo">
+    <img src="./Data/logo-icon.png" alt="Logo Ikon" class="logo-icon-bg">
+<br><br>
+    <h1>Super Games</h1>
+</a>
+         
+        <div class="header-nav" style="text-align: center;">
+
+           <div id="searchBar" class="search-bar-container">
+        <form action="http://192.168.1.14/search.php" method="GET" class="search-form">
+            <input type="text" name="q" placeholder="Cari produk di sini..." class="search-input" required="">
+            <button type="submit" class="search-button">
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+            </button>
+            <span id="closeSearch" class="close-search">×</span>
+        </form>
+    </div>
+</div></div></header>
+    <main>
+        <a href="http://192.168.1.14/index.php" class="tombol-kembali" style="font-size: 32pt;  font-weight: bold;">« Kembali</a>
+        <div class="detail-container">
+            <!-- (Bagian info produk, sama seperti sebelumnya) -->
+            <div class="product-image-detail">
+                <img src="./Data/produk-68b0209518d07.jpeg" alt="Stand Mic">
+            </div>
+            <div class="product-info-detail">
+                <h2>Stand Mic</h2>
+                <div class="rating-summary" style="font-size: 24pt;  font-weight: bold;">
+                    <span class="bintang" style="font-size: 30pt;  font-weight: bold; --rating: 0;"></span>
+                    <span><strong id="avgRatingText">0</strong>/5.0 (<span id="totalUlasanText">0</span> ulasan)</span>
+                </div>
+                <p style="font-size: 30pt;  font-weight: bold;" class="harga-detail">Rp 185,000</p>
+                <p style="font-size: 25pt;" class="stok-detail">Stok Tersedia: <strong>5</strong></p>
+                 <!-- BAGIAN INI DIMODIFIKASI -->
+                <div class="description-and-video-wrapper">
+                    <h2 style=" color: rgba(41, 62, 253, 1); font-weight: bold;" ;="">Deskripsi Produk</h2>
+                    <div class="deskripsi-scroll-container"> <!-- Kontainer baru untuk deskripsi yang bisa di-scroll -->
+                        <p style="font-size: 16pt;  font-weight: bold;" class="deskripsi-detail">stand mic Tripod panjang Free 2 Holder mic Rd - 209 Original<br>
+<br>
+<br>
+warna tersedia hitam<br>
+<br>
+-kokoh dan awet dengan besi yang dilapisi cat anti karat<br>
+-free 2 holder mic<br>
+</p>
+                    </div>
+                                    </div>
+                <!-- AKHIR MODIFIKASI -->
+
+ <form action="http://192.168.1.14/aksi_keranjang.php" method="POST" class="form-beli">
+                    <!-- ... form beli tetap sama ... -->
+                    <input type="hidden" name="id_produk" value="173">
+                    <input type="hidden" name="aksi" value="tambah">
+                    <div class="input-jumlah">
+                        <label for="jumlah" style="font-size: 25pt;  font-weight: bold;">Jumlah:</label>
+                        <input style="font-size: 25pt;  font-weight: bold;" type="number" name="jumlah" id="jumlah" value="1" min="1" max="5">
+                    </div>
+                    <button type="submit" class="tombol-beli-besar" style="font-size: 30pt;  font-weight: bold; color: white;">Masukkan ke Keranjang</button>
+                </form>
+            </div>
+        </div>
+
+        </div>
+    </main>
+
+ <!-- Modal untuk Video Player (BARU) -->
+<div id="videoModal" class="modal lightbox" style="display: none;">
+    <span class="close-button video-close">×</span>
+    <video id="productVideo" class="lightbox-content" controls="" preload="none">
+        <source src="uploads/videos/" type="video/mp4">
+        Browser Anda tidak mendukung tag video.
+    </video>
+</div>
+<div id="lightboxModal" class="modal lightbox" style="display: none;">
+    <span class="close-button lightbox-close">×</span>
+    <img class="lightbox-content" id="lightboxImage" src="http://192.168.1.14/detail.php?id=173">
+</div>
+
+<script>
+// ... (kode lightbox gambar dan ulasan yang sudah ada) ...
+
+// --- Video Modal Logic (dengan Fullscreen API) ---
+const videoModal = document.getElementById('videoModal');
+const btnBukaVideo = document.getElementById('btnTontonVideo');
+const videoPlayer = document.getElementById('productVideo');
+const videoClose = document.querySelector('.video-close');
+
+if(btnBukaVideo) {
+    btnBukaVideo.onclick = () => {
+        videoModal.style.display = 'flex';
+        videoPlayer.play();
+        
+        // Coba minta fullscreen jika didukung oleh browser
+        if (videoPlayer.requestFullscreen) {
+            videoPlayer.requestFullscreen();
+        } else if (videoPlayer.webkitRequestFullscreen) { /* Safari */
+            videoPlayer.webkitRequestFullscreen();
+        } else if (videoPlayer.msRequestFullscreen) { /* IE11 */
+            videoPlayer.msRequestFullscreen();
+        }
+    };
+}
+
+const tutupVideoModal = () => {
+    // Keluar dari mode fullscreen jika sedang aktif
+    if (document.fullscreenElement || document.webkitFullscreenElement) {
+        if (document.exitFullscreen) {
+            document.exitFullscreen();
+        } else if (document.webkitExitFullscreen) { /* Safari */
+            document.webkitExitFullscreen();
+        }
+    }
+    
+    videoModal.style.display = 'none';
+    videoPlayer.pause();
+    videoPlayer.currentTime = 0;
+};
+
+if(videoClose) videoClose.onclick = tutupVideoModal;
+
+// Event listener untuk keluar dari fullscreen dengan tombol 'Esc'
+document.addEventListener('fullscreenchange', () => {
+    if (!document.fullscreenElement) {
+        tutupVideoModal();
+    }
+});
+document.addEventListener('webkitfullscreenchange', () => { // Untuk Safari
+    if (!document.webkitFullscreenElement) {
+        tutupVideoModal();
+    }
+});
+
+// ... (sisa kode JavaScript) ...
+</script>
+
+    <script>        
+    // --- Lightbox Logic ---
+    const lightbox = document.getElementById('lightboxModal');
+    const lightboxImg = document.getElementById('lightboxImage');
+    const lightboxClose = document.querySelector('.lightbox-close');
+
+    function bukaLightbox(src) {
+        lightbox.style.display = 'flex';
+        lightboxImg.src = src;
+    }
+    // Logika untuk menutup lightbox
+    if (lightboxClose) {
+        lightboxClose.onclick = () => lightbox.style.display = 'none';
+    }
+    // Menutup juga saat klik area gelap di sekitar gambar
+    window.onclick = (event) => { 
+        if (event.target == lightbox) {
+            lightbox.style.display = 'none';
+        }
+        // ... (kode untuk modal ulasan)
+        const modal = document.getElementById('ulasanModal'); // Tambahkan ini
+        if (event.target == modal) { // Tambahkan ini
+            modal.style.display = 'none'; // Tambahkan ini
+        } // Tambahkan ini
+    };
+
+    // --- Ulasan Modal & AJAX Logic (DISEMPURNAKAN) ---
+    document.addEventListener('DOMContentLoaded', function() {
+        // ... (kode untuk membuka dan menutup modal ulasan tetap sama) ...
+        const modal = document.getElementById('ulasanModal');
+        const btnBuka = document.getElementById('btnBeriUlasan');
+        const spanTutup = modal.querySelector('.close-button');
+        const formUlasan = document.getElementById('formUlasanModal');
+        
+        if(btnBuka) btnBuka.onclick = () => modal.style.display = 'block';
+        if(spanTutup) spanTutup.onclick = () => modal.style.display = 'none';
+        // window.onclick sudah dihandle di atas untuk lightbox dan modal ulasan
+
+        formUlasan.onsubmit = function(event) {
+            event.preventDefault();
+            const formData = new FormData(formUlasan);
+            const modalError = document.getElementById('modalError');
+            const submitButton = formUlasan.querySelector('button[type="submit"]');
+
+            // Validasi jumlah file
+            const files = formData.getAll('gambar_ulasan[]');
+            if (files.length > 3) {
+                alert('Anda hanya dapat meng-upload maksimal 3 gambar.');
+                return;
+            }
+
+            submitButton.disabled = true;
+            submitButton.textContent = 'Mengirim...';
+            modalError.style.display = 'none';
+
+            fetch('aksi_ulasan.php', {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => response.json())
+            .then(data => {
+                if(data.success) {
+                    modal.style.display = 'none';
+                    let gambarHTML = '';
+                    if(data.data.gambar_ulasan && data.data.gambar_ulasan.length > 0) {
+                        gambarHTML += '<div class="gambar-ulasan-container">';
+                        data.data.gambar_ulasan.forEach(gambar => {
+                            gambarHTML += `<img src="uploads/ulasan/${gambar}" class="gambar-ulasan-item" onclick="bukaLightbox(this.src)">`;
+                        });
+                        gambarHTML += '</div>';
+                    }
+                     
+                    const ulasanBaruHTML = `
+                        <div class="item-ulasan">
+                            <strong>${data.data.nama_lengkap}</strong>
+                            <div class="rating-summary">
+                                <span class="bintang" style="--rating: ${data.data.rating};"></span>
+                                <small>${data.data.tanggal_ulasan}</small>
+                            </div>
+                            <p>${data.data.komentar}</p>
+                            ${gambarHTML}
+                        </div>
+                    `;
+                    document.getElementById('daftarUlasan').insertAdjacentHTML('afterbegin', ulasanBaruHTML);
+                    if(document.getElementById('belumAdaUlasan')) document.getElementById('belumAdaUlasan').remove();
+                    if(btnBuka) btnBuka.remove(); // Hapus tombol "Beri Ulasan" setelah berhasil
+                    alert('Ulasan berhasil dikirim!');
+                } else {
+                    modalError.textContent = data.message;
+                    modalError.style.display = 'block';
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                modalError.textContent = 'Terjadi kesalahan jaringan.';
+                modalError.style.display = 'block';
+            })
+            .finally(() => {
+                submitButton.disabled = false;
+                submitButton.textContent = 'Kirim Ulasan';
+            });
+        }
+    });
+    </script>
+    <script src="./Data/main.js.download" defer=""></script>
+
+
+</body></html>
